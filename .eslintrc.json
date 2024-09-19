@@ -1,3 +1,29 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:prettier/recommended",
+    "next/core-web-vitals",
+    "airbnb"
+  ],
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "plugins": [
+    "react",
+    "react-hooks",
+    "prettier"
+  ],
+  "rules": {
+    "quotes": ["error", "double"],
+    "indent": ["error", 2],
+    "no-console": "warn",
+    "prettier/prettier": "error"
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  }
 }
