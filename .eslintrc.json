@@ -4,7 +4,8 @@
     "plugin:react/recommended",
     "plugin:prettier/recommended",
     "next/core-web-vitals",
-    "airbnb"
+    "airbnb",
+    "plugin:jsx-a11y/recommended"
   ],
   "env": {
     "browser": true,
@@ -16,6 +17,9 @@
     "prettier"
   ],
   "rules": {
+    "jsx-a11y/html-has-lang": "off",
+    "react/react-in-jsx-scope": "off",
+    "react/prop-types": "off",
     "quotes": ["error", "double"],
     "indent": ["error", 2],
     "no-console": "warn",
