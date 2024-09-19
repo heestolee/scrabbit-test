@@ -2,6 +2,7 @@
   "name": "notiondrop",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -9,14 +10,23 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@notionhq/client": "^2.2.15",
+    "@vercel/node": "^3.2.14",
+    "marked": "^14.1.2",
+    "next": "14.2.12",
+    "next-auth": "^4.24.7",
+    "node-fetch": "^3.3.2",
+    "notion-client": "^6.16.0",
+    "puppeteer": "^23.4.0",
     "react": "^18",
     "react-dom": "^18",
-    "next": "14.2.12"
+    "react-markdown": "^9.0.1",
+    "react-notion-x": "^6.16.0"
   },
   "devDependencies": {
-    "postcss": "^8",
-    "tailwindcss": "^3.4.1",
     "eslint": "^8",
-    "eslint-config-next": "14.2.12"
+    "eslint-config-next": "14.2.12",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1"
   }
 }
