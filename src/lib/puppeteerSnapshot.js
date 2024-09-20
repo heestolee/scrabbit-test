@@ -5,7 +5,6 @@ import path from "path";
 export default async function takeSnapshot(notionUrl, fileName) {
   const browser = await puppeteer.launch({
     headless: true,
-    args: ["--disable-gpu", "--no-sandbox", "--disable-setuid-sandbox"],
   });
   const page = await browser.newPage();
 
@@ -15,7 +14,7 @@ export default async function takeSnapshot(notionUrl, fileName) {
   });
 
   await page.goto(notionUrl, {
-    waitUntil: "networkidle0",
+    waitUntil: "networkidle2",
   });
 
   const customCSS = `
