@@ -1,6 +1,6 @@
 import React from "react";
 
-function InputArea({ deployMode, url, setUrl, customContent, setCustomContent, handleFetch }) {
+export default function InputArea({ deployMode, url, setUrl, customContent, setCustomContent, handleFetch }) {
   return (
     <div className="flex flex-col items-center p-4 w-full max-w-md">
       {deployMode === "url" ? (
@@ -15,7 +15,7 @@ function InputArea({ deployMode, url, setUrl, customContent, setCustomContent, h
         <textarea
           value={customContent}
           onChange={(e) => setCustomContent(e.target.value)}
-          placeholder="여기에 배포할 콘텐츠를 입력하세요"
+          placeholder="Enter your contents"
           className="border p-2 rounded w-full"
           rows="10"
         />
@@ -30,4 +30,3 @@ function InputArea({ deployMode, url, setUrl, customContent, setCustomContent, h
   );
 }
 
-export default InputArea;
