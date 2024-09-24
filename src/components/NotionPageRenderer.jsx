@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { NotionRenderer } from 'react-notion-x';
+import { Box } from "@chakra-ui/react";
 
 export default function NotionPageRenderer({ notionPageId }) {
   const [recordMap, setRecordMap] = useState(null);
@@ -34,20 +34,32 @@ export default function NotionPageRenderer({ notionPageId }) {
   }
 
   return (
-    <section className="notion-container w-full">
-      <NotionRenderer
-        recordMap={recordMap}
-        fullPage={true}
-        darkMode={false}
-        components={{
-          block: ({ block }) => {
-            if (block.type === 'unsupported') {
-              return <CustomBlockRenderer block={block} />;
-            }
-            return null;
-          }
-        }}
-      />
-    </section>
+    <Box maxW="80%" mx="auto" p={8} bg="white" textAlign="left">
+      {deployMode === "partial" ? (
+        <>
+          {blocks.length > 0 ? (
+            blocks.map((blockHtml) => {
+              const blockId = blockHtml.match(/data-block-id="([^"]+)"/)[1];
+              return (
+                <Box
+                  key={blockId}
+                  onClick={() => handleSelectBlock(blockId)}
+                  bg={selectedBlocks[blockId] ? "blue.50" : "white"}
+                  border={selectedBlocks[blockId] ? "2px solid blue" : "none"}
+                  p={4}
+                  mb={4}
+                  cursor="pointer"
+                  dangerouslySetInnerHTML={{ __html: blockHtml }}
+                />
+              );
+            })
+          ) : (
+            <Box>No blocks found.</Box>
+          )}
+        </>
+      ) : (
+        <div dangerouslySetInnerHTML={{ __html: snapshotHtml }} />
+      )}
+    </Box>
   );
 }
