@@ -1,28 +1,15 @@
 import React from "react";
+import { Box, Radio, RadioGroup, Stack } from "@chakra-ui/react";
 
-function DeployModeSelector({ deployMode, setDeployMode }) {
+export default function DeployModeSelector({ deployMode, setDeployMode }) {
   return (
-    <div className="flex justify-center mb-4">
-      <label className="mr-4">
-        <input
-          type="radio"
-          value="url"
-          checked={deployMode === "url"}
-          onChange={() => setDeployMode("url")}
-        />
-        Deploy by URL
-      </label>
-      <label>
-        <input
-          type="radio"
-          value="custom"
-          checked={deployMode === "custom"}
-          onChange={() => setDeployMode("custom")}
-        />
-        Partial Deploy
-      </label>
-    </div>
+    <Box mb={6}>
+      <RadioGroup onChange={setDeployMode} value={deployMode}>
+        <Stack direction="row" spacing={4} justify="center">
+          <Radio value="url">Deploy by URL</Radio>
+          <Radio value="partial">Partial Deploy</Radio>
+        </Stack>
+      </RadioGroup>
+    </Box>
   );
 }
-
-export default DeployModeSelector;
