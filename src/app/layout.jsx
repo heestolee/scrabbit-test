@@ -1,10 +1,16 @@
-import "./globals.css";
-import "react-notion-x/src/styles.css";
+import { ChakraProvider, ColorModeScript } from "@chakra-ui/react";
 
 export default function RootLayout({ children }) {
   return (
     <html lang="ko">
-      <body>{children}</body>
+      <head>
+        <ColorModeScript />
+      </head>
+      <body>
+        <ChakraProvider>
+          {children}
+        </ChakraProvider>
+      </body>
     </html>
   );
 }
