@@ -3,36 +3,44 @@
 import React, { useEffect, useState } from "react";
 import { Box } from "@chakra-ui/react";
 
-export default function NotionPageRenderer({ notionPageId }) {
-  const [recordMap, setRecordMap] = useState(null);
+export default function NotionPageRenderer({
+  notionPageId,
+  deployMode,
+  onSnapshotReady,
+  selectedBlocks,
+  handleSelectBlock,
+}) {
+  const [snapshotHtml, setSnapshotHtml] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const fetchPageContent = async (pageId) => {
+  async function fetchPreviewContent(pageId) {
     try {
       setIsLoading(true);
-      const response = await fetch(`/api/notion/${pageId}`);
-      if (!response.ok) throw new Error('노션 페이지 페칭 실패');
+      const response = await fetch("/api/puppeteer-preview-snapshot", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ notionUrl: `https://www.notion.so/${pageId}` }),
+      });
+      if (!response.ok) throw new Error("노션 페이지 페칭 실패");
       const data = await response.json();
-      setRecordMap(data.recordMap);
+      setSnapshotHtml(data.snapshotHtml);
+      onSnapshotReady();
     } catch (error) {
       console.error("노션 페이지 페칭 에러:", error);
     } finally {
       setIsLoading(false);
     }
-  };
+  }
 
   useEffect(() => {
-    if (notionPageId) fetchPageContent(notionPageId);
+    if (notionPageId) fetchPreviewContent(notionPageId);
   }, [notionPageId]);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  if (isLoading) return null;
+  if (!snapshotHtml) return <div>No data available.</div>;
 
-  if (!recordMap) {
-    return <div>노션 데이터 가져오기 실패</div>;
-  }
-
+  const blocks =
+    snapshotHtml?.match(/<div[^>]*data-block-id[^>]*>.*?<\/div>/g) || [];
   return (
     <Box maxW="80%" mx="auto" p={8} bg="white" textAlign="left">
       {deployMode === "partial" ? (

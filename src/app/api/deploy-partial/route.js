@@ -1,38 +1,24 @@
 import { NextResponse } from "next/server";
+import takeSnapshot from "@/lib/puppeteerSnapshot";
+import removeUnselectedBlocksFromHtml from "@/lib/removeBlocks";
 import fs from "fs";
-import path from "path";
-import { marked } from "marked";
 
 export async function POST(request) {
-  const { customContent, subdomain } = await request.json();
-
   try {
-    const renderedHtmlContent = marked(customContent);
+    const { pageId, subdomain, notionUrl, selectedBlocks } =
+      await request.json();
 
-    const htmlTemplate = `
-      <html>
-        <head>
-          <title>NotionDrop</title>
-          <style>
-            body { font-family: Arial, sans-serif; padding: 20px; }
-            .content { max-width: 800px; margin: 0 auto; }
-          </style>
-        </head>
-        <body>
-          <div class="content">
-            ${renderedHtmlContent}
-          </div>
-        </body>
-      </html>
-    `;
+    const snapshotFilePath = await takeSnapshot(
+      notionUrl,
+      `snapshot-${pageId}`,
+    );
 
-    const directoryPath = path.resolve("snapshots");
-    if (!fs.existsSync(directoryPath)) {
-      fs.mkdirSync(directoryPath, { recursive: true });
-    }
+    const snapshotHtml = fs.readFileSync(snapshotFilePath, "utf8");
 
-    const filePath = path.resolve(directoryPath, `custom-${subdomain}.html`);
-    fs.writeFileSync(filePath, htmlTemplate);
+    const cleanedHtml = removeUnselectedBlocksFromHtml(
+      snapshotHtml,
+      selectedBlocks,
+    );
 
     const vercelResponse = await fetch(
       "https://api.vercel.com/v13/deployments",
@@ -43,20 +29,19 @@ export async function POST(request) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name: "custom-content-page",
+          name: "notion-partial",
           files: [
             {
               file: "index.html",
-              data: htmlTemplate,
+              data: cleanedHtml,
             },
           ],
-          projectSettings: {
-            buildCommand: "",
-            installCommand: "",
-            outputDirectory: "",
-            framework: "nextjs",
-          },
           target: "production",
+          projectSettings: {
+            buildCommand: null,
+            installCommand: null,
+            outputDirectory: "",
+          },
         }),
       },
     );
@@ -89,7 +74,12 @@ export async function POST(request) {
 
     return NextResponse.json({ url: `https://${subdomain}.notiondrop.site` });
   } catch (error) {
-    console.error("Deploy error:", error);
-    return NextResponse.json({ error: "Deploy failed" }, { status: 500 });
+    console.error("Partial deploy error:", error);
+    return NextResponse.json(
+      {
+        error: "Partial deploy failed",
+      },
+      { status: 500 },
+    );
   }
 }
