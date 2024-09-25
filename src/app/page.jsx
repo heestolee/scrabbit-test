@@ -5,7 +5,18 @@ import React, { useState, useRef } from "react";
 import DeployModeSelector from "@/components/DeployModeSelector";
 import InputArea from "@/components/InputArea";
 import NotionPageRenderer from "@/components/NotionPageRenderer";
-import { Box, Button, Input } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Input,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+} from '@chakra-ui/react'
 
 export default function Home() {
   const [deployMode, setDeployMode] = useState("url");
@@ -15,6 +26,8 @@ export default function Home() {
   const [previewMode, setPreviewMode] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedBlocks, setSelectedBlocks] = useState({});
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
   const renderSectionRef = useRef(null);
 
   const handleFetch = () => {
@@ -58,10 +71,13 @@ export default function Home() {
 
       if (!response.ok) throw new Error("배포에 실패했습니다.");
       const data = await response.json();
-      alert(`배포 완료! 배포된 사이트: ${data.url}`);
+
+      setModalMessage(`배포 완료! 배포된 사이트: ${data.url}`);
+      setIsModalOpen(true);
     } catch (error) {
       console.error("배포 중 오류 발생:", error);
-      alert("배포에 실패했습니다. 다시 시도해주세요.");
+      setModalMessage("배포에 실패했습니다. 다시 시도해주세요.");
+      setIsModalOpen(true);
     }
   };
 
@@ -70,6 +86,10 @@ export default function Home() {
       ...prev,
       [blockId]: !prev[blockId],
     }));
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
   };
 
   return (
@@ -106,17 +126,34 @@ export default function Home() {
               value={subdomain}
               onChange={(e) => setSubdomain(e.target.value)}
               placeholder="custom domain"
+              bg={"white"}
               size="sm"
               mr={2}
               borderRadius="md"
             />
             <span>.notiondrop.site</span>
           </Box>
-          <Button onClick={handleDeploy} colorScheme="green" width="full" mt={4}>
+          <Button onClick={handleDeploy} colorScheme="green" width="25rem" mt={4}>
             Deploy
           </Button>
         </Box>
       )}
+
+      <Modal isOpen={isModalOpen} onClose={closeModal} isCentered>
+        <ModalOverlay width={"100%"} height={"100%"}/>
+        <ModalContent>
+          <ModalHeader>배포 결과</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            {modalMessage}
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={closeModal}>
+              닫기
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 }
