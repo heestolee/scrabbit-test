@@ -102,7 +102,7 @@ export default function NotionPageRenderer({
 
     return () => {
       blockElements.forEach((block) => {
-        block.removeEventListener("click", (e) => handleBlockClick(blockId, e));
+        block.removeEventListener("click", (e) => handleBlockClick(block, e));
       });
     };
   }, [selectedBlocks, handleBlockClick, deployMode]);

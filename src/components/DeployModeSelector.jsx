@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, FormControl, FormLabel, Switch, Stack } from "@chakra-ui/react";
+import { Box, FormControl, FormLabel, Switch } from "@chakra-ui/react";
 
 export default function DeployModeSelector({ deployMode, setDeployMode }) {
   const handleSwitchChange = () => {

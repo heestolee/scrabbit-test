@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Input, Button, FormControl, FormLabel } from "@chakra-ui/react";
+import { Box, Input, Button, FormControl } from "@chakra-ui/react";
 
 export default function DomainInputArea({
   subdomain,
