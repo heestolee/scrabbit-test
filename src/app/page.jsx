@@ -20,6 +20,7 @@ import {
 } from "@chakra-ui/react"
 
 export default function Home() {
+  const [deployMode, setDeployMode] = useState("full");
   const [url, setUrl] = useState("");
   const [subdomain, setSubdomain] = useState("");
   const [notionPageId, setNotionPageId] = useState(null);

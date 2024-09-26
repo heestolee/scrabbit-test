@@ -1,15 +1,24 @@
 import React from "react";
-import { Box, Radio, RadioGroup, Stack } from "@chakra-ui/react";
+import { Box, FormControl, FormLabel, Switch, Stack } from "@chakra-ui/react";
 
 export default function DeployModeSelector({ deployMode, setDeployMode }) {
+  const handleSwitchChange = () => {
+    setDeployMode(deployMode === "full" ? "partial" : "full");
+  };
+
   return (
     <Box mb={6}>
-      <RadioGroup onChange={setDeployMode} value={deployMode}>
-        <Stack direction="row" spacing={4} justify="center">
-          <Radio value="url">Deploy by URL</Radio>
-          <Radio value="partial">Partial Deploy</Radio>
-        </Stack>
-      </RadioGroup>
+      <FormControl display="flex" alignItems="center" justifyContent="center">
+        <Switch
+          id="deploy-mode-switch"
+          isChecked={deployMode === "partial"}
+          onChange={handleSwitchChange}
+          colorScheme="blue"
+        />
+        <FormLabel htmlFor="deploy-mode-switch" mb="0">
+          {deployMode === "full" ? "Full Deploy" : "Partial Deploy"}
+        </FormLabel>
+      </FormControl>
     </Box>
   );
 }
