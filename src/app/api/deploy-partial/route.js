@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import takeSnapshot from "@/lib/puppeteerSnapshot";
+import takePartialSnapshot from "@/lib/puppeteerSnapshot";
 import removeUnselectedBlocksFromHtml from "@/lib/removeBlocks";
 import fs from "fs";
 
@@ -8,7 +8,7 @@ export async function POST(request) {
     const { pageId, subdomain, notionUrl, selectedBlocks } =
       await request.json();
 
-    const snapshotFilePath = await takeSnapshot(
+    const snapshotFilePath = await takePartialSnapshot(
       notionUrl,
       `snapshot-${pageId}`,
     );

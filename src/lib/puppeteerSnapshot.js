@@ -55,7 +55,7 @@ export default async function takeSnapshot(notionUrl, fileName) {
   const cleanFileName = fileName.replace(/\?.*$/, "");
 
   const filePath = path.resolve(
-    ".next/server/app/api/deploy",
+    ".next/server/app/api/deploy-partial",
     `${cleanFileName}.html`,
   );
   fs.writeFileSync(filePath, snapshotHtml);

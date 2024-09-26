@@ -22,7 +22,7 @@ export async function POST(request) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name: "notion-snapshot",
+          name: "notion-partial",
           files: [
             {
               file: "index.html",
