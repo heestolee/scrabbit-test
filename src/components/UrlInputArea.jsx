@@ -1,23 +1,46 @@
 import React from "react";
-import { Box, Input, Button } from "@chakra-ui/react";
+import { Box, Input, Button, FormControl } from "@chakra-ui/react";
 
 export default function UrlInputArea({ url, setUrl, handleFetch, isLoading }) {
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    handleFetch();
+  };
+
   return (
-    <Box display="flex" flexDirection="column" alignItems="center" p={4} w="100%" maxW="md">
-      <Input
-        type="text"
-        value={url}
-        onChange={(e) => setUrl(e.target.value)}
-        placeholder="Enter Notion page URL"
-      />
+    <Box
+      as="form"
+      onSubmit={handleSubmit}
+      display="flex"
+      flexDirection="row"
+      justifyContent="center"
+      p={4}
+      gap={3}
+      alignItems="center"
+    >
+      <FormControl width="50rem" isRequired>
+        <Input
+          type="text"
+          value={url}
+          bg={"white"}
+          onChange={(e) => setUrl(e.target.value)}
+          placeholder="Enter Notion page URL"
+          borderColor="gray.300"
+          borderRadius="md"
+          _focus={{ borderColor: "blue.500" }}
+          boxShadow="sm"
+        />
+      </FormControl>
       <Button
-        onClick={handleFetch}
+        type="submit"
         colorScheme="blue"
-        width="full"
-        mt={4}
+        width="10rem"
         isLoading={isLoading}
+        borderRadius="md"
+        _hover={{ bg: "blue.400" }}
+        boxShadow="md"
       >
-        Get Notion Data
+        Get Data
       </Button>
     </Box>
   );
