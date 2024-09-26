@@ -5,10 +5,11 @@ import React, { useState, useRef } from "react";
 import DeployModeSelector from "@/components/DeployModeSelector";
 import InputArea from "@/components/InputArea";
 import NotionPageRenderer from "@/components/NotionPageRenderer";
+import DomainInputArea from "@/components/DomainInputArea";
+
 import {
   Box,
   Button,
-  Input,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -16,10 +17,9 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-} from '@chakra-ui/react'
+} from "@chakra-ui/react"
 
 export default function Home() {
-  const [deployMode, setDeployMode] = useState("url");
   const [url, setUrl] = useState("");
   const [subdomain, setSubdomain] = useState("");
   const [notionPageId, setNotionPageId] = useState(null);
@@ -44,7 +44,6 @@ export default function Home() {
 
   const handleSnapshotReady = () => {
     setIsLoading(false);
-    renderSectionRef.current.scrollIntoView({ behavior: "smooth" });
   };
 
   const handleDeploy = async () => {
@@ -94,50 +93,40 @@ export default function Home() {
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" minH="100vh" bg="gray.100">
-      <Image
-        src="/notiondrop.png"
-        alt="notiondrop logo"
-        width={800}
-        height={400}
-      />
-      <DeployModeSelector deployMode={deployMode} setDeployMode={setDeployMode} />
-      <InputArea
-        deployMode={deployMode}
-        url={url}
-        setUrl={setUrl}
-        handleFetch={handleFetch}
-        isLoading={isLoading}
-      />
-
-      {previewMode && (
-        <Box ref={renderSectionRef} display="flex" flexDirection="column" alignItems="center" p={4} w="full">
-          {notionPageId && (
-            <NotionPageRenderer
+          <Image
+            src="/notiondrop.png"
+            alt="notiondrop logo"
+            width={800}
+            height={400}
+          />
+      <Box display="flex" flexDirection="row" w="full" justifyContent="center">
+            <DeployModeSelector deployMode={deployMode} setDeployMode={setDeployMode} />
+            <InputArea
+              deployMode={deployMode}
+              url={url}
+              setUrl={setUrl}
+              handleFetch={handleFetch}
+              isLoading={isLoading}
+              />
+            {notionPageId && (
+              <NotionPageRenderer
               notionPageId={notionPageId}
               deployMode={deployMode}
               onSnapshotReady={handleSnapshotReady}
               selectedBlocks={selectedBlocks}
               handleSelectBlock={handleSelectBlock}
-            />
-          )}
-          <Box display="flex" mt={4} w="full" maxW="md">
-            <Input
-              type="text"
-              value={subdomain}
-              onChange={(e) => setSubdomain(e.target.value)}
-              placeholder="custom domain"
-              bg={"white"}
-              size="sm"
-              mr={2}
-              borderRadius="md"
-            />
-            <span>.notiondrop.site</span>
+              />
+            )}
+        {previewMode && (
+          <Box ref={renderSectionRef} display="flex" flexDirection="column" paddingRight={20} w="40%">
+            <DomainInputArea
+              subdomain={subdomain}
+              setSubdomain={setSubdomain}
+              handleDeploy={handleDeploy}
+              />
           </Box>
-          <Button onClick={handleDeploy} colorScheme="green" width="25rem" mt={4}>
-            Deploy
-          </Button>
-        </Box>
-      )}
+        )}
+      </Box>
 
       <Modal isOpen={isModalOpen} onClose={closeModal} isCentered>
         <ModalOverlay width={"100%"} height={"100%"}/>
