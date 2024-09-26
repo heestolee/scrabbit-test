@@ -7,6 +7,7 @@ import InputArea from "@/components/InputArea";
 import NotionPageRenderer from "@/components/NotionPageRenderer";
 import DomainInputArea from "@/components/DomainInputArea";
 
+import { motion } from "framer-motion";
 import {
   Box,
   Button,
@@ -93,14 +94,39 @@ export default function Home() {
   };
 
   return (
-    <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" minH="100vh" bg="gray.100">
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent={previewMode ? "" : "center"}
+      minH="100vh"
+      bg="gray.100"
+      overflowY="hidden"
+    >
+      <motion.div
+        initial={{ scale: 1, x: 0 }}
+        animate={previewMode ? { scale: 1, x: "-47vw", y: "0vh" } : { scale: 1, x: 0, y: 0 }}
+        transition={{ duration: 0.8 }}
+        style={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+      >
+        <Box>
           <Image
             src="/notiondrop.png"
             alt="notiondrop logo"
-            width={800}
-            height={400}
+            width={previewMode ? 100 : 800}
+            height={previewMode ? 64 : 400}
           />
+        </Box>
+      </motion.div>
       <Box display="flex" flexDirection="row" w="full" justifyContent="center">
+        <Box display="flex" flexDirection="column" alignItems="center">
+          <Box
+            display="flex"
+            flexDirection={previewMode ? "row" : "column"}
+            alignItems={previewMode ? "baseline" : "center"}
+            justifyContent="center"
+            w="100%"
+          >
             <DeployModeSelector deployMode={deployMode} setDeployMode={setDeployMode} />
             <InputArea
               deployMode={deployMode}
@@ -109,6 +135,7 @@ export default function Home() {
               handleFetch={handleFetch}
               isLoading={isLoading}
               />
+          </Box>
             {notionPageId && (
               <NotionPageRenderer
               notionPageId={notionPageId}
@@ -118,13 +145,14 @@ export default function Home() {
               handleSelectBlock={handleSelectBlock}
               />
             )}
+          </Box>
         {previewMode && (
           <Box ref={renderSectionRef} display="flex" flexDirection="column" paddingRight={20} w="40%">
             <DomainInputArea
               subdomain={subdomain}
               setSubdomain={setSubdomain}
               handleDeploy={handleDeploy}
-              />
+            />
           </Box>
         )}
       </Box>

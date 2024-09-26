@@ -41,9 +41,7 @@ export default async function takePreviewSnapshot(notionUrl) {
       style.innerHTML = `
         body {
           margin: 0;
-          padding: 20px;
           box-sizing: border-box;
-          zoom: 0.9;
         }
 
         .notion-page-content {
