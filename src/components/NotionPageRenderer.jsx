@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Box } from "@chakra-ui/react";
 
 export default function NotionPageRenderer({
@@ -10,8 +10,9 @@ export default function NotionPageRenderer({
   selectedBlocks,
   handleSelectBlock,
 }) {
-  const [snapshotHtml, setSnapshotHtml] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const snapshotHtmlRef = useRef(null);
+  const pageRef = useRef(null);
 
   async function fetchPreviewContent(pageId) {
     try {
@@ -23,7 +24,7 @@ export default function NotionPageRenderer({
       });
       if (!response.ok) throw new Error("노션 페이지 페칭 실패");
       const data = await response.json();
-      setSnapshotHtml(data.snapshotHtml);
+      snapshotHtmlRef.current = data.snapshotHtml;
       onSnapshotReady();
     } catch (error) {
       console.error("노션 페이지 페칭 에러:", error);
@@ -36,38 +37,57 @@ export default function NotionPageRenderer({
     if (notionPageId) fetchPreviewContent(notionPageId);
   }, [notionPageId]);
 
-  if (isLoading) return null;
-  if (!snapshotHtml) return <div>No data available.</div>;
+  const handleBlockClick = useCallback((blockId, event) => {
+    event.preventDefault();
+    if (deployMode === "partial") {
+      handleSelectBlock(blockId);
+    }
+  }, [handleSelectBlock, deployMode]);
 
-  const blocks =
-    snapshotHtml?.match(/<div[^>]*data-block-id[^>]*>.*?<\/div>/g) || [];
+  useEffect(() => {
+    if (deployMode !== "partial") return;
+
+    const blockElements = document.querySelectorAll("[data-block-id]");
+
+    blockElements.forEach((block) => {
+      const blockId = block.getAttribute("data-block-id");
+
+      block.addEventListener("click", (e) => handleBlockClick(blockId, e));
+
+      if (selectedBlocks[blockId]) {
+        block.style.border = "2px solid blue";
+        block.style.backgroundColor = "blue.50";
+      } else {
+        block.style.border = "none";
+        block.style.backgroundColor = "white";
+      }
+
+      block.addEventListener("mouseenter", () => {
+        if (!selectedBlocks[blockId]) {
+          block.style.border = "1px dashed lightgray";
+        }
+      });
+
+      block.addEventListener("mouseleave", () => {
+        if (!selectedBlocks[blockId]) {
+          block.style.border = "none";
+        }
+      });
+    });
+
+    return () => {
+      blockElements.forEach((block) => {
+        block.removeEventListener("click", (e) => handleBlockClick(blockId, e));
+      });
+    };
+  }, [selectedBlocks, handleBlockClick, deployMode]);
+
+  if (isLoading) return null;
+  if (!snapshotHtmlRef.current) return <div>No data available.</div>;
+
   return (
-    <Box maxW="80%" mx="auto" p={8} bg="white" textAlign="left">
-      {deployMode === "partial" ? (
-        <>
-          {blocks.length > 0 ? (
-            blocks.map((blockHtml) => {
-              const blockId = blockHtml.match(/data-block-id="([^"]+)"/)[1];
-              return (
-                <Box
-                  key={blockId}
-                  onClick={() => handleSelectBlock(blockId)}
-                  bg={selectedBlocks[blockId] ? "blue.50" : "white"}
-                  border={selectedBlocks[blockId] ? "2px solid blue" : "none"}
-                  p={4}
-                  mb={4}
-                  cursor="pointer"
-                  dangerouslySetInnerHTML={{ __html: blockHtml }}
-                />
-              );
-            })
-          ) : (
-            <Box>No blocks found.</Box>
-          )}
-        </>
-      ) : (
-        <div dangerouslySetInnerHTML={{ __html: snapshotHtml }} />
-      )}
+    <Box maxW="90%" maxH="70%" overflowY="hidden" mx="auto" p={8} bg="white" textAlign="left" ref={pageRef}>
+      <div dangerouslySetInnerHTML={{ __html: snapshotHtmlRef.current }} />
     </Box>
   );
 }
