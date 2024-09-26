@@ -44,7 +44,9 @@ export default function NotionPageRenderer({
       if (deployMode === "partial") {
         handleSelectBlock(blockId);
 
-        const blockElement = document.querySelector(`[data-block-id="${blockId}"]`);
+        const blockElement = document.querySelector(
+          `[data-block-id="${blockId}"]`,
+        );
 
         if (blockElement) {
           const cleanBlock = blockElement.cloneNode(true);
@@ -55,14 +57,16 @@ export default function NotionPageRenderer({
             if (selectedBlocks[blockId]) {
               return prev.filter((block) => !block.includes(blockId));
             } else {
-              const updatedBlocks = prev.filter((block) => !block.includes(blockId));
+              const updatedBlocks = prev.filter(
+                (block) => !block.includes(blockId),
+              );
               return [...updatedBlocks, cleanBlock.outerHTML];
             }
           });
         }
       }
     },
-    [handleSelectBlock, deployMode, selectedBlocks, setSelectedBlocksHtml]
+    [handleSelectBlock, deployMode, selectedBlocks, setSelectedBlocksHtml],
   );
 
   useEffect(() => {
@@ -98,7 +102,7 @@ export default function NotionPageRenderer({
 
     return () => {
       blockElements.forEach((block) => {
-        block.removeEventListener("click", (e) => handleBlockClick(blockId, e));
+        block.removeEventListener("click", (e) => handleBlockClick(block, e));
       });
     };
   }, [selectedBlocks, handleBlockClick, deployMode]);
@@ -107,7 +111,16 @@ export default function NotionPageRenderer({
   if (!snapshotHtmlRef.current) return <div>No data available.</div>;
 
   return (
-    <Box maxW="90%" maxH="70%" overflowY="hidden" mx="auto" p={8} bg="white" textAlign="left" ref={pageRef}>
+    <Box
+      maxW="90%"
+      maxH="70%"
+      overflowY="hidden"
+      mx="auto"
+      p={8}
+      bg="white"
+      textAlign="left"
+      ref={pageRef}
+    >
       <div dangerouslySetInnerHTML={{ __html: snapshotHtmlRef.current }} />
     </Box>
   );

@@ -1,7 +1,11 @@
 import React from "react";
-import { Box, Input, Button, FormControl, FormLabel } from "@chakra-ui/react";
+import { Box, Input, Button, FormControl } from "@chakra-ui/react";
 
-export default function DomainInputArea({ subdomain, setSubdomain, handleDeploy }) {
+export default function DomainInputArea({
+  subdomain,
+  setSubdomain,
+  handleDeploy,
+}) {
   const handleSubmit = (event) => {
     event.preventDefault();
     handleDeploy();
@@ -9,7 +13,10 @@ export default function DomainInputArea({ subdomain, setSubdomain, handleDeploy 
 
   return (
     <Box display="flex" flexDirection="row" alignItems="center" p={4} w="100%">
-      <form onSubmit={handleSubmit} style={{ width: "100%", display: "flex", alignItems: "center" }}>
+      <form
+        onSubmit={handleSubmit}
+        style={{ width: "100%", display: "flex", alignItems: "center" }}
+      >
         <Box display="flex" w="full" alignItems="center" paddingRight={4}>
           <FormControl>
             <Input

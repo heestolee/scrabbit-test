@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
-import takePartialSnapshot from "@/lib/puppeteerSnapshot";
-import removeUnselectedBlocksFromHtml from "@/lib/removeBlocks";
 import fs from "fs";
+
+import takePartialSnapshot from "@/lib/puppeteerPartialSnapshot";
+import removeUnselectedBlocksFromHtml from "@/lib/removeBlocks";
 
 export async function POST(request) {
   try {

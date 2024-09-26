@@ -19,7 +19,7 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-} from "@chakra-ui/react"
+} from "@chakra-ui/react";
 
 export default function Home() {
   const [deployMode, setDeployMode] = useState("full");
@@ -58,7 +58,8 @@ export default function Home() {
 
     try {
       const notionUrl = url;
-      const apiEndpoint = deployMode === "partial" ? "/api/deploy-partial" : "/api/deploy";
+      const apiEndpoint =
+        deployMode === "partial" ? "/api/deploy-partial" : "/api/deploy";
 
       const response = await fetch(apiEndpoint, {
         method: "POST",
@@ -107,9 +108,17 @@ export default function Home() {
     >
       <motion.div
         initial={{ scale: 1, x: 0 }}
-        animate={previewMode ? { scale: 1, x: "-47vw", y: "0vh" } : { scale: 1, x: 0, y: 0 }}
+        animate={
+          previewMode
+            ? { scale: 1, x: "-47vw", y: "0vh" }
+            : { scale: 1, x: 0, y: 0 }
+        }
         transition={{ duration: 0.8 }}
-        style={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
       >
         <Box>
           <Image
@@ -121,7 +130,12 @@ export default function Home() {
         </Box>
       </motion.div>
       <Box display="flex" flexDirection="row" w="full" justifyContent="center">
-        <Box display="flex" flexDirection="column" alignItems="center" maxH="50%">
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          maxH="50%"
+        >
           <Box
             display="flex"
             flexDirection={previewMode ? "row" : "column"}
@@ -129,33 +143,42 @@ export default function Home() {
             justifyContent="center"
             w="100%"
           >
-            <DeployModeSelector deployMode={deployMode} setDeployMode={setDeployMode} />
+            <DeployModeSelector
+              deployMode={deployMode}
+              setDeployMode={setDeployMode}
+            />
             <UrlInputArea
               deployMode={deployMode}
               url={url}
               setUrl={setUrl}
               handleFetch={handleFetch}
               isLoading={isLoading}
-              />
+            />
           </Box>
-            {notionPageId && (
-              <NotionPageRenderer
+          {notionPageId && (
+            <NotionPageRenderer
               notionPageId={notionPageId}
               deployMode={deployMode}
               onSnapshotReady={handleSnapshotReady}
               selectedBlocks={selectedBlocks}
               handleSelectBlock={handleSelectBlock}
               setSelectedBlocksHtml={setSelectedBlocksHtml}
-              />
-            )}
-          </Box>
+            />
+          )}
+        </Box>
         {previewMode && (
-          <Box ref={renderSectionRef} display="flex" flexDirection="column" paddingRight={20} w="40%">
+          <Box
+            ref={renderSectionRef}
+            display="flex"
+            flexDirection="column"
+            paddingRight={20}
+            w="40%"
+          >
             <DomainInputArea
               subdomain={subdomain}
               setSubdomain={setSubdomain}
               handleDeploy={handleDeploy}
-              />
+            />
             <DeployPreviewRenderer
               deployMode={deployMode}
               selectedBlocksHtml={selectedBlocksHtml}
@@ -167,13 +190,11 @@ export default function Home() {
       </Box>
 
       <Modal isOpen={isModalOpen} onClose={closeModal} isCentered>
-        <ModalOverlay width={"100%"} height={"100%"}/>
+        <ModalOverlay width={"100%"} height={"100%"} />
         <ModalContent>
           <ModalHeader>배포 결과</ModalHeader>
           <ModalCloseButton />
-          <ModalBody>
-            {modalMessage}
-          </ModalBody>
+          <ModalBody>{modalMessage}</ModalBody>
           <ModalFooter>
             <Button colorScheme="blue" mr={3} onClick={closeModal}>
               닫기

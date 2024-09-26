@@ -7,9 +7,7 @@ export default function RootLayout({ children }) {
         <ColorModeScript />
       </head>
       <body>
-        <ChakraProvider>
-          {children}
-        </ChakraProvider>
+        <ChakraProvider>{children}</ChakraProvider>
       </body>
     </html>
   );
