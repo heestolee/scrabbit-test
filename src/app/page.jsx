@@ -6,6 +6,7 @@ import DeployModeSelector from "@/components/DeployModeSelector";
 import InputArea from "@/components/InputArea";
 import NotionPageRenderer from "@/components/NotionPageRenderer";
 import DomainInputArea from "@/components/DomainInputArea";
+import DeployPreviewRenderer from "@/components/DeployPreviewRenderer";
 
 import { motion } from "framer-motion";
 import {
@@ -28,6 +29,7 @@ export default function Home() {
   const [previewMode, setPreviewMode] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedBlocks, setSelectedBlocks] = useState({});
+  const [selectedBlocksHtml, setSelectedBlocksHtml] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const renderSectionRef = useRef(null);
@@ -143,6 +145,7 @@ export default function Home() {
               onSnapshotReady={handleSnapshotReady}
               selectedBlocks={selectedBlocks}
               handleSelectBlock={handleSelectBlock}
+              setSelectedBlocksHtml={setSelectedBlocksHtml}
               />
             )}
           </Box>
@@ -152,6 +155,12 @@ export default function Home() {
               subdomain={subdomain}
               setSubdomain={setSubdomain}
               handleDeploy={handleDeploy}
+              />
+            <DeployPreviewRenderer
+              deployMode={deployMode}
+              selectedBlocksHtml={selectedBlocksHtml}
+              style={{ transform: "scale(0.7)" }}
+              width="90%"
             />
           </Box>
         )}

@@ -9,6 +9,7 @@ export default function NotionPageRenderer({
   onSnapshotReady,
   selectedBlocks,
   handleSelectBlock,
+  setSelectedBlocksHtml,
 }) {
   const [isLoading, setIsLoading] = useState(true);
   const snapshotHtmlRef = useRef(null);
@@ -37,12 +38,32 @@ export default function NotionPageRenderer({
     if (notionPageId) fetchPreviewContent(notionPageId);
   }, [notionPageId]);
 
-  const handleBlockClick = useCallback((blockId, event) => {
-    event.preventDefault();
-    if (deployMode === "partial") {
-      handleSelectBlock(blockId);
-    }
-  }, [handleSelectBlock, deployMode]);
+  const handleBlockClick = useCallback(
+    (blockId, event) => {
+      event.preventDefault();
+      if (deployMode === "partial") {
+        handleSelectBlock(blockId);
+
+        const blockElement = document.querySelector(`[data-block-id="${blockId}"]`);
+
+        if (blockElement) {
+          const cleanBlock = blockElement.cloneNode(true);
+
+          cleanBlock.style.zoom = "0.7";
+
+          setSelectedBlocksHtml((prev) => {
+            if (selectedBlocks[blockId]) {
+              return prev.filter((block) => !block.includes(blockId));
+            } else {
+              const updatedBlocks = prev.filter((block) => !block.includes(blockId));
+              return [...updatedBlocks, cleanBlock.outerHTML];
+            }
+          });
+        }
+      }
+    },
+    [handleSelectBlock, deployMode, selectedBlocks, setSelectedBlocksHtml]
+  );
 
   useEffect(() => {
     if (deployMode !== "partial") return;
