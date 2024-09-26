@@ -3,7 +3,7 @@
 import Image from "next/image";
 import React, { useState, useRef } from "react";
 import DeployModeSelector from "@/components/DeployModeSelector";
-import InputArea from "@/components/InputArea";
+import UrlInputArea from "@/components/UrlInputArea";
 import NotionPageRenderer from "@/components/NotionPageRenderer";
 import DomainInputArea from "@/components/DomainInputArea";
 import DeployPreviewRenderer from "@/components/DeployPreviewRenderer";
@@ -130,7 +130,7 @@ export default function Home() {
             w="100%"
           >
             <DeployModeSelector deployMode={deployMode} setDeployMode={setDeployMode} />
-            <InputArea
+            <UrlInputArea
               deployMode={deployMode}
               url={url}
               setUrl={setUrl}

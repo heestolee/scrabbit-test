@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Input, Button } from "@chakra-ui/react";
 
-export default function InputArea({ url, setUrl, handleFetch, isLoading }) {
+export default function UrlInputArea({ url, setUrl, handleFetch, isLoading }) {
   return (
     <Box display="flex" flexDirection="column" alignItems="center" p={4} w="100%" maxW="md">
       <Input
