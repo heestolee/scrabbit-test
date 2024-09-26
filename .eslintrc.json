@@ -10,11 +10,7 @@
     "browser": true,
     "es2021": true
   },
-  "plugins": [
-    "react",
-    "react-hooks",
-    "prettier"
-  ],
+  "plugins": ["react", "react-hooks", "prettier"],
   "rules": {
     "jsx-a11y/html-has-lang": "off",
     "react/react-in-jsx-scope": "off",
