@@ -47,14 +47,12 @@ export default async function takePreviewSnapshot(notionUrl) {
         .notion-page-content {
           max-width: 900px;
           margin: 0 auto;
-          padding: 20px;
-          transform: scale(0.9);
+          transform: zoom(0.9);
           transform-origin: top center;
         }
 
         .notion-cursor-listener {
           width: 100% !important;
-          padding
         }
 
         .layout {

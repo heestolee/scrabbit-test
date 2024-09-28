@@ -7,6 +7,7 @@ import UrlInputArea from "@/components/UrlInputArea";
 import NotionPageRenderer from "@/components/NotionPageRenderer";
 import DomainInputArea from "@/components/DomainInputArea";
 import DeployPreviewRenderer from "@/components/DeployPreviewRenderer";
+import LoadingAnimation from "@/components/LoadingAnimaition";
 
 import { motion } from "framer-motion";
 import {
@@ -19,19 +20,19 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react"
 
 export default function Home() {
   const [deployMode, setDeployMode] = useState("full");
   const [url, setUrl] = useState("");
   const [subdomain, setSubdomain] = useState("");
   const [notionPageId, setNotionPageId] = useState(null);
-  const [previewMode, setPreviewMode] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedBlocks, setSelectedBlocks] = useState({});
   const [selectedBlocksHtml, setSelectedBlocksHtml] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
+  const [isRendered, setIsRendered] = useState(false);
   const renderSectionRef = useRef(null);
 
   const handleFetch = () => {
@@ -43,11 +44,11 @@ export default function Home() {
     setIsLoading(true);
     const pageId = url.split("/").pop();
     setNotionPageId(pageId);
-    setPreviewMode(true);
   };
 
   const handleSnapshotReady = () => {
     setIsLoading(false);
+    setIsRendered(true);
   };
 
   const handleDeploy = async () => {
@@ -101,18 +102,17 @@ export default function Home() {
       display="flex"
       flexDirection="column"
       alignItems="center"
-      justifyContent={previewMode ? "" : "center"}
-      maxH="100vh"
-      minH= "100vh"
+      justifyContent={notionPageId ? "" : "center"}
+      minH="100vh"
       bg="gray.100"
       overflowY="hidden"
     >
       <motion.div
-        initial={{ scale: 1, x: 0 }}
+      initial={{ zoom: 1, x: 0 }}
         animate={
-          previewMode
-            ? { scale: 1, x: "-47vw", y: "0vh" }
-            : { scale: 1, x: 0, y: 0 }
+        isRendered
+          ? { zoom: 0.1, x:"-470vw" }
+          : isLoading ? { zoom: 0.1 } : { zoom: 1 }
         }
         transition={{ duration: 0.8 }}
         style={{
@@ -123,14 +123,14 @@ export default function Home() {
       >
         <Box>
           <Image
-            src="/notiondrop.png"
+          src="/notiondrop.svg"
             alt="notiondrop logo"
-            width={previewMode ? 100 : 800}
-            height={previewMode ? 64 : 400}
+          width={800}
+          height={400}
           />
         </Box>
       </motion.div>
-      <Box display="flex" flexDirection="row" w="full" justifyContent="center" px={5}>
+      <Box display="flex" flexDirection="row" w="full" justifyContent="space-around" height="100%">
         <Box
           display="flex"
           flexDirection="column"
@@ -139,9 +139,9 @@ export default function Home() {
         >
           <Box
             display="flex"
-            flexDirection={previewMode ? "row" : "column"}
-            alignItems={previewMode ? "baseline" : "center"}
-            justifyContent="center"
+            flexDirection={notionPageId ? "row" : "column"}
+            alignItems={notionPageId ? "baseline" : "center"}
+            justifyContent="space-between"
             w="100%"
           >
             <DeployModeSelector
@@ -155,15 +155,11 @@ export default function Home() {
               handleFetch={handleFetch}
               isLoading={isLoading}
             />
-          </Box >
-          {previewMode && (<Box
-            w="95%"
-            h="70%"
-            mx="auto"
-            p={4}
-            bg="white"
-          >
+          </Box>
+
           {notionPageId && (
+            <Box h="100%" w="100%" mx="auto" bg="white">
+              {isLoading && <LoadingAnimation />}
             <NotionPageRenderer
               notionPageId={notionPageId}
               deployMode={deployMode}
@@ -172,11 +168,16 @@ export default function Home() {
               handleSelectBlock={handleSelectBlock}
               setSelectedBlocksHtml={setSelectedBlocksHtml}
             />
+            </Box>
           )}
-          </Box>)
-          }
         </Box>
-        {previewMode && (
+
+        <motion.div
+          initial={{ width: "0%", }}
+          animate={ isRendered ? {width: "30%"} : {} }
+          transition={{ duration: 1 }}
+          style={{ transformOrigin: "left", display: isRendered ? "block" : "none" }}
+        >
           <Box
             ref={renderSectionRef}
             display="flex"
@@ -190,11 +191,11 @@ export default function Home() {
             <DeployPreviewRenderer
               deployMode={deployMode}
               selectedBlocksHtml={selectedBlocksHtml}
-              style={{ transform: "scale(0.7)" }}
+              style={{ transform: "zoom(0.7)" }}
               width="90%"
             />
           </Box>
-        )}
+        </motion.div>
       </Box>
 
       <Modal isOpen={isModalOpen} onClose={closeModal} isCentered>

@@ -2,7 +2,15 @@ import { motion } from "framer-motion";
 
 export default function LoadingAnimation() {
   return (
-    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "45rem", width: "100%"}}>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "45rem",
+        width: "100%",
+      }}
+    >
       <motion.img
         src="/notiondrop.svg"
         alt="Loading"
@@ -17,4 +25,4 @@ export default function LoadingAnimation() {
       />
     </div>
   );
-};
+}

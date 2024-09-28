@@ -13,7 +13,7 @@ export default function UrlInputArea({ url, setUrl, handleFetch, isLoading }) {
       onSubmit={handleSubmit}
       display="flex"
       flexDirection="row"
-      justifyContent="center"
+      justifyContent="space-between"
       p={4}
       gap={3}
       alignItems="center"
