@@ -102,7 +102,8 @@ export default function Home() {
       flexDirection="column"
       alignItems="center"
       justifyContent={previewMode ? "" : "center"}
-      minH="100vh"
+      maxH="100vh"
+      minH= "100vh"
       bg="gray.100"
       overflowY="hidden"
     >
@@ -129,7 +130,7 @@ export default function Home() {
           />
         </Box>
       </motion.div>
-      <Box display="flex" flexDirection="row" w="full" justifyContent="center">
+      <Box display="flex" flexDirection="row" w="full" justifyContent="center" px={5}>
         <Box
           display="flex"
           flexDirection="column"
@@ -154,7 +155,14 @@ export default function Home() {
               handleFetch={handleFetch}
               isLoading={isLoading}
             />
-          </Box>
+          </Box >
+          {previewMode && (<Box
+            w="95%"
+            h="70%"
+            mx="auto"
+            p={4}
+            bg="white"
+          >
           {notionPageId && (
             <NotionPageRenderer
               notionPageId={notionPageId}
@@ -165,14 +173,14 @@ export default function Home() {
               setSelectedBlocksHtml={setSelectedBlocksHtml}
             />
           )}
+          </Box>)
+          }
         </Box>
         {previewMode && (
           <Box
             ref={renderSectionRef}
             display="flex"
             flexDirection="column"
-            paddingRight={20}
-            w="40%"
           >
             <DomainInputArea
               subdomain={subdomain}

@@ -17,7 +17,7 @@ export default function DomainInputArea({
         onSubmit={handleSubmit}
         style={{ width: "100%", display: "flex", alignItems: "center" }}
       >
-        <Box display="flex" w="full" alignItems="center" paddingRight={4}>
+        <Box display="flex" w="full" alignItems="baseline" paddingRight={4}>
           <FormControl>
             <Input
               id="subdomain"

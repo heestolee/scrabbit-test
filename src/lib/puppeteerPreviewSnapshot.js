@@ -54,6 +54,15 @@ export default async function takePreviewSnapshot(notionUrl) {
 
         .notion-cursor-listener {
           width: 100% !important;
+          padding
+        }
+
+        .layout {
+          padding: 0 0 0 2rem;
+        }
+
+        .notion-topbar {
+        display: none
         }
 
         @media (max-width: 1200px) {

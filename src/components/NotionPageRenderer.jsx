@@ -112,12 +112,8 @@ export default function NotionPageRenderer({
 
   return (
     <Box
-      maxW="90%"
-      maxH="70%"
+      h="100%"
       overflowY="hidden"
-      mx="auto"
-      p={8}
-      bg="white"
       textAlign="left"
       ref={pageRef}
     >

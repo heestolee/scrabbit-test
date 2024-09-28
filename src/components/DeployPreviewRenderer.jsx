@@ -22,7 +22,7 @@ export default function DeployPreviewRenderer({
         w="90%"
         flexDirection="column"
         height="80%"
-        overflowY="hidden"
+        overflowY="scroll"
       >
         {selectedBlocksHtml && selectedBlocksHtml.length > 0 ? (
           selectedBlocksHtml.map((blockHtml, index) => (
