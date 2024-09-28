@@ -33,6 +33,7 @@ export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [isRendered, setIsRendered] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
   const renderSectionRef = useRef(null);
 
   const handleFetch = () => {
@@ -77,7 +78,7 @@ export default function Home() {
       if (!response.ok) throw new Error("배포에 실패했습니다.");
       const data = await response.json();
 
-      setModalMessage(`배포 완료! 배포된 사이트: ${data.url}`);
+      setModalMessage(`배포된 사이트: ${data.url}`);
       setIsModalOpen(true);
     } catch (error) {
       console.error("배포 중 오류 발생:", error);
@@ -107,29 +108,29 @@ export default function Home() {
       bg="gray.100"
       overflowY="hidden"
     >
-      <motion.div
+    <motion.div
       initial={{ zoom: 1, x: 0 }}
-        animate={
+      animate={
         isRendered
           ? { zoom: 0.1, x:"-470vw" }
           : isLoading ? { zoom: 0.1 } : { zoom: 1 }
-        }
-        transition={{ duration: 0.8 }}
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Box>
-          <Image
+      }
+      transition={{ duration: 0.8 }}
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <Box>
+        <Image
           src="/notiondrop.svg"
-            alt="notiondrop logo"
+          alt="notiondrop logo"
           width={800}
           height={400}
-          />
-        </Box>
-      </motion.div>
+        />
+      </Box>
+    </motion.div>
       <Box display="flex" flexDirection="row" w="full" justifyContent="space-around" height="100%">
         <Box
           display="flex"
@@ -160,14 +161,14 @@ export default function Home() {
           {notionPageId && (
             <Box h="100%" w="100%" mx="auto" bg="white">
               {isLoading && <LoadingAnimation />}
-            <NotionPageRenderer
-              notionPageId={notionPageId}
-              deployMode={deployMode}
-              onSnapshotReady={handleSnapshotReady}
-              selectedBlocks={selectedBlocks}
-              handleSelectBlock={handleSelectBlock}
-              setSelectedBlocksHtml={setSelectedBlocksHtml}
-            />
+              <NotionPageRenderer
+                notionPageId={notionPageId}
+                deployMode={deployMode}
+                onSnapshotReady={handleSnapshotReady}
+                selectedBlocks={selectedBlocks}
+                handleSelectBlock={handleSelectBlock}
+                setSelectedBlocksHtml={setSelectedBlocksHtml}
+              />
             </Box>
           )}
         </Box>
@@ -201,9 +202,33 @@ export default function Home() {
       <Modal isOpen={isModalOpen} onClose={closeModal} isCentered>
         <ModalOverlay width={"100%"} height={"100%"} />
         <ModalContent>
-          <ModalHeader>배포 결과</ModalHeader>
+          <ModalHeader>
+            {modalMessage.includes("https://") ? "배포 완료!" : "배포 중 오류 발생"}
+          </ModalHeader>
           <ModalCloseButton />
-          <ModalBody>{modalMessage}</ModalBody>
+          <ModalBody>
+            {modalMessage}
+            {modalMessage.includes("배포된") && (
+              <>
+                <Button
+                  bg="gray.300"
+                  onClick={() => {
+                    navigator.clipboard.writeText(modalMessage.split(": ")[1]);
+                    setIsCopied(true);
+                  }}
+                  h={8}
+                  w={10}
+                  ml={2}
+                  p={2.5}
+                >
+                  <Image src="/copy.svg" alt="Copy Icon" width={96} height={96} />
+                </Button>
+                <p style={{ color: "green", marginLeft: "10px", minHeight: "24px" }}>
+                  {isCopied ? "주소가 복사되었습니다." : ""}
+                </p>
+              </>
+            )}
+          </ModalBody>
           <ModalFooter>
             <Button colorScheme="blue" mr={3} onClick={closeModal}>
               닫기
