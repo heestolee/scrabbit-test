@@ -1,17 +1,23 @@
-import puppeteer from "puppeteer";
+import chrome from "chrome-aws-lambda";
+import puppeteer from "puppeteer-core";
 
 export default async function takePreviewSnapshot(notionUrl) {
   console.log("Puppeteer 시작:", notionUrl);
 
+  const executablePath =
+    process.env.NODE_ENV === "production"
+      ? await chrome.executablePath
+      : "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"; // 로컬 Windows에서 Chrome 경로 사용
+
   const browser = await puppeteer.launch({
     headless: true,
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    executablePath: executablePath || "/usr/bin/chromium-browser",
+    args: [...chrome.args, "--no-sandbox", "--disable-setuid-sandbox"],
+    defaultViewport: chrome.defaultViewport,
+    ignoreHTTPSErrors: true,
   });
-
   const page = await browser.newPage();
-
   await page.setViewport({ width: 1200, height: 800 });
-
   try {
     console.log("Puppeteer 페이지 이동 중:", notionUrl);
 
@@ -60,7 +66,7 @@ export default async function takePreviewSnapshot(notionUrl) {
         }
 
         .notion-topbar {
-        display: none
+          display: none;
         }
 
         @media (max-width: 1200px) {

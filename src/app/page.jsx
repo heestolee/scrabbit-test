@@ -20,7 +20,7 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-} from "@chakra-ui/react"
+} from "@chakra-ui/react";
 
 export default function Home() {
   const [deployMode, setDeployMode] = useState("full");
@@ -108,30 +108,38 @@ export default function Home() {
       bg="gray.100"
       overflowY="hidden"
     >
-    <motion.div
-      initial={{ zoom: 1, x: 0 }}
-      animate={
-        isRendered
-          ? { zoom: 0.1, x:"-470vw" }
-          : isLoading ? { zoom: 0.1 } : { zoom: 1 }
-      }
-      transition={{ duration: 0.8 }}
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Box>
-        <Image
-          src="/notiondrop.svg"
-          alt="notiondrop logo"
-          width={800}
-          height={400}
-        />
-      </Box>
-    </motion.div>
-      <Box display="flex" flexDirection="row" w="full" justifyContent="space-around" height="100%">
+      <motion.div
+        initial={{ zoom: 1, x: 0 }}
+        animate={
+          isRendered
+            ? { zoom: 0.1, x: "-470vw" }
+            : isLoading
+              ? { zoom: 0.1 }
+              : { zoom: 1 }
+        }
+        transition={{ duration: 0.8 }}
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Box>
+          <Image
+            src="/notiondrop.svg"
+            alt="notiondrop logo"
+            width={800}
+            height={400}
+          />
+        </Box>
+      </motion.div>
+      <Box
+        display="flex"
+        flexDirection="row"
+        w="full"
+        justifyContent="space-around"
+        height="100%"
+      >
         <Box
           display="flex"
           flexDirection="column"
@@ -174,16 +182,15 @@ export default function Home() {
         </Box>
 
         <motion.div
-          initial={{ width: "0%", }}
-          animate={ isRendered ? {width: "30%"} : {} }
+          initial={{ width: "0%" }}
+          animate={isRendered ? { width: "30%" } : {}}
           transition={{ duration: 1 }}
-          style={{ transformOrigin: "left", display: isRendered ? "block" : "none" }}
+          style={{
+            transformOrigin: "left",
+            display: isRendered ? "block" : "none",
+          }}
         >
-          <Box
-            ref={renderSectionRef}
-            display="flex"
-            flexDirection="column"
-          >
+          <Box ref={renderSectionRef} display="flex" flexDirection="column">
             <DomainInputArea
               subdomain={subdomain}
               setSubdomain={setSubdomain}
@@ -203,7 +210,9 @@ export default function Home() {
         <ModalOverlay width={"100%"} height={"100%"} />
         <ModalContent>
           <ModalHeader>
-            {modalMessage.includes("https://") ? "배포 완료!" : "배포 중 오류 발생"}
+            {modalMessage.includes("https://")
+              ? "배포 완료!"
+              : "배포 중 오류 발생"}
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
@@ -221,9 +230,20 @@ export default function Home() {
                   ml={2}
                   p={2.5}
                 >
-                  <Image src="/copy.svg" alt="Copy Icon" width={96} height={96} />
+                  <Image
+                    src="/copy.svg"
+                    alt="Copy Icon"
+                    width={96}
+                    height={96}
+                  />
                 </Button>
-                <p style={{ color: "green", marginLeft: "10px", minHeight: "24px" }}>
+                <p
+                  style={{
+                    color: "green",
+                    marginLeft: "10px",
+                    minHeight: "24px",
+                  }}
+                >
                   {isCopied ? "주소가 복사되었습니다." : ""}
                 </p>
               </>

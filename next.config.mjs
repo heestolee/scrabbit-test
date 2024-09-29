@@ -2,9 +2,11 @@
 const nextConfig = {
   productionBrowserSourceMaps: false,
   output: "standalone",
-  experimental: {
-    esmExternals: false,
-    appDir: true,
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      config.externals = [...config.externals, "chrome-aws-lambda"];
+    }
+    return config;
   },
 };
 
