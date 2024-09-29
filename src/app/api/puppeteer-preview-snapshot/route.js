@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import takePreviewSnapshot from "@/lib/puppeteerPreviewSnapshot";
+import corsMiddleware from "@/lib/corsMiddleware";
 
 export async function POST(request) {
   try {
@@ -20,3 +21,5 @@ export async function POST(request) {
     );
   }
 }
+
+export default corsMiddleware(POST);

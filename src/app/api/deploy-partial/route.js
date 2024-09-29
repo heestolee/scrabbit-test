@@ -1,20 +1,16 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-
 import takePartialSnapshot from "@/lib/puppeteerPartialSnapshot";
 import removeUnselectedBlocksFromHtml from "@/lib/removeBlocks";
+import corsMiddleware from "@/lib/corsMiddleware";
 
 export async function POST(request) {
-  try {
-    const { pageId, subdomain, notionUrl, selectedBlocks } =
-      await request.json();
+  const { pageId, subdomain, notionUrl, selectedBlocks } = await request.json();
 
-    const snapshotFilePath = await takePartialSnapshot(
+  try {
+    const snapshotHtml = await takePartialSnapshot(
       notionUrl,
       `snapshot-${pageId}`,
     );
-
-    const snapshotHtml = fs.readFileSync(snapshotFilePath, "utf8");
 
     const cleanedHtml = removeUnselectedBlocksFromHtml(
       snapshotHtml,
@@ -84,3 +80,5 @@ export async function POST(request) {
     );
   }
 }
+
+export default corsMiddleware(POST);

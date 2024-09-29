@@ -1,17 +1,12 @@
 import { NextResponse } from "next/server";
 import takeSnapshot from "@/lib/puppeteerSnapshot";
-import fs from "fs";
+import corsMiddleware from "@/lib/corsMiddleware";
 
 export async function POST(request) {
   const { pageId, subdomain, notionUrl } = await request.json();
 
   try {
-    const snapshotFilePath = await takeSnapshot(
-      notionUrl,
-      `snapshot-${pageId}`,
-    );
-
-    const snapshotHtml = fs.readFileSync(snapshotFilePath, "utf8");
+    const snapshotHtml = await takeSnapshot(notionUrl, `snapshot-${pageId}`);
 
     const vercelResponse = await fetch(
       "https://api.vercel.com/v13/deployments",
@@ -71,3 +66,5 @@ export async function POST(request) {
     return NextResponse.json({ error: "Deploy failed" }, { status: 500 });
   }
 }
+
+export default corsMiddleware(POST);
