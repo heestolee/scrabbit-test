@@ -1,20 +1,24 @@
+import { NextResponse } from "next/server";
+
 export default function corsMiddleware(handler) {
-  return async (req, res) => {
-    res.setHeader("Access-Control-Allow-Credentials", true);
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader(
+  return async (req) => {
+    const response = NextResponse.next();
+
+    response.headers.set("Access-Control-Allow-Credentials", "true");
+    response.headers.set("Access-Control-Allow-Origin", "*");
+    response.headers.set(
       "Access-Control-Allow-Methods",
       "GET,OPTIONS,PATCH,DELETE,POST,PUT",
     );
-    res.setHeader(
+    response.headers.set(
       "Access-Control-Allow-Headers",
       "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version",
     );
 
     if (req.method === "OPTIONS") {
-      return res.status(200).end();
+      return new NextResponse(null, { status: 200 });
     }
 
-    return handler(req, res);
+    return handler(req, response);
   };
 }

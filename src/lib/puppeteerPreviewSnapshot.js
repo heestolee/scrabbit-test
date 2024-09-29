@@ -1,35 +1,34 @@
-import chrome from "chrome-aws-lambda";
-import puppeteer from "puppeteer-core";
+import puppeteer from "puppeteer";
 
 export default async function takePreviewSnapshot(notionUrl) {
   console.log("Puppeteer 시작:", notionUrl);
 
-  const executablePath =
-    process.env.NODE_ENV === "production"
-      ? await chrome.executablePath
-      : "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"; // 로컬 Windows에서 Chrome 경로 사용
-
   const browser = await puppeteer.launch({
     headless: true,
-    executablePath: executablePath || "/usr/bin/chromium-browser",
-    args: [...chrome.args, "--no-sandbox", "--disable-setuid-sandbox"],
-    defaultViewport: chrome.defaultViewport,
-    ignoreHTTPSErrors: true,
+    args: [
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      "headless",
+      "--disable-gpu",
+      "--disable-dev-shm-usage",
+    ],
   });
+
   const page = await browser.newPage();
+
   await page.setViewport({ width: 1200, height: 800 });
+
   try {
     console.log("Puppeteer 페이지 이동 중:", notionUrl);
 
     await page.goto(notionUrl, {
       waitUntil: "networkidle2",
-      timeout: 60000,
+      timeout: 120000,
     });
 
     console.log("Puppeteer 페이지 이동 완료");
 
     await page.evaluateHandle("document.fonts.ready");
-
     console.log("폰트 로드 완료");
 
     await page.evaluate(() => {
@@ -66,7 +65,7 @@ export default async function takePreviewSnapshot(notionUrl) {
         }
 
         .notion-topbar {
-          display: none;
+        display: none
         }
 
         @media (max-width: 1200px) {

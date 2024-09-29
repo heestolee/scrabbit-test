@@ -1,18 +1,16 @@
-import chromium from "chrome-aws-lambda";
-import puppeteer from "puppeteer-core";
+import puppeteer from "puppeteer";
 import fs from "fs";
 import path from "path";
 
-export default async function takeSnapshot(
-  notionUrl,
-  fileName = "default-file-name",
-) {
+export default async function takeSnapshot(notionUrl, fileName) {
   const browser = await puppeteer.launch({
     headless: true,
-    args: chromium.args,
-    defaultViewport: chromium.defaultViewport,
-    executablePath:
-      (await chromium.executablePath) || "/usr/bin/chromium-browser",
+    args: [
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      "--disable-gpu",
+      "--disable-dev-shm-usage",
+    ],
   });
 
   const page = await browser.newPage();
@@ -22,57 +20,59 @@ export default async function takeSnapshot(
     height: 1080,
   });
 
-  await page.goto(notionUrl, {
-    waitUntil: "networkidle2",
-  });
-
-  const customCSS = `
-    .notion-page {
-      max-width: 100% !important;
-      padding: 20px !important;
-    }
-    .notion-container {
-      padding: 20px !important;
-    }
-    img {
-      max-width: 100% !important;
-    }
-    body {
-      margin: 0 !important;
-      padding: 0 !important;
-    }
-  `;
-
-  await page.evaluate((customCSS) => {
-    const style = document.createElement("style");
-    style.innerHTML = customCSS;
-    document.head.appendChild(style);
-  }, customCSS);
-
-  await page.evaluate(() => {
-    const images = document.querySelectorAll("img");
-    images.forEach((img) => {
-      const src = img.getAttribute("src");
-      if (src && src.startsWith("/")) {
-        img.setAttribute("src", `https://www.notion.so${src}`);
-      }
+  try {
+    await page.goto(notionUrl, {
+      waitUntil: "networkidle2",
+      timeout: 120000,
     });
-  });
 
-  const snapshotHtml = await page.content();
+    await page.evaluateHandle("document.fonts.ready");
 
-  const cleanFileName = (fileName || "default-file-name").replace(/\?.*$/, "");
+    await page.evaluate(() => {
+      const style = document.createElement("style");
+      style.innerHTML = `
+        .notion-page {
+          max-width: 100% !important;
+          padding: 20px !important;
+        }
+        .notion-container {
+          padding: 20px !important;
+        }
+        img {
+          max-width: 100% !important;
+        }
+        body {
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+      `;
+      document.head.appendChild(style);
+    });
 
-  const directoryPath = path.resolve(".next/server/app/api/deploy-partial");
-  const filePath = path.join(directoryPath, `${cleanFileName}.html`);
+    await page.evaluate(() => {
+      const images = document.querySelectorAll("img");
+      images.forEach((img) => {
+        const src = img.getAttribute("src");
+        if (src && src.startsWith("/")) {
+          img.setAttribute("src", `https://www.notion.so${src}`);
+        }
+      });
+    });
 
-  if (!fs.existsSync(directoryPath)) {
-    fs.mkdirSync(directoryPath, { recursive: true });
+    const snapshotHtml = await page.content();
+
+    const cleanFileName = fileName.replace(/\?.*$/, "");
+    const filePath = path.resolve(
+      ".next/server/app/api/deploy-partial",
+      `${cleanFileName}.html`,
+    );
+    fs.writeFileSync(filePath, snapshotHtml);
+
+    await browser.close();
+    return filePath;
+  } catch (error) {
+    console.error("Puppeteer 전체 스냅샷 오류 발생:", error.message);
+    await browser.close();
+    throw new Error("Puppeteer 전체 스냅샷 생성 실패");
   }
-
-  fs.writeFileSync(filePath, snapshotHtml);
-
-  await browser.close();
-
-  return filePath;
 }
