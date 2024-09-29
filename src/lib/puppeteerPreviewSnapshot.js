@@ -7,17 +7,24 @@ export default async function takePreviewSnapshot(notionUrl) {
   const executablePath =
     process.env.NODE_ENV === "production"
       ? await chrome.executablePath
-      : "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"; // 로컬 Windows에서 Chrome 경로 사용
+      : "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
 
   const browser = await puppeteer.launch({
     headless: true,
     executablePath: executablePath || "/usr/bin/chromium-browser",
-    args: [...chrome.args, "--no-sandbox", "--disable-setuid-sandbox"],
+    args: [
+      ...chrome.args,
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      "--single-process",
+    ],
     defaultViewport: chrome.defaultViewport,
     ignoreHTTPSErrors: true,
   });
+
   const page = await browser.newPage();
   await page.setViewport({ width: 1200, height: 800 });
+
   try {
     console.log("Puppeteer 페이지 이동 중:", notionUrl);
 
@@ -49,33 +56,27 @@ export default async function takePreviewSnapshot(notionUrl) {
           margin: 0;
           box-sizing: border-box;
         }
-
         .notion-page-content {
           max-width: 900px;
           margin: 0 auto;
           transform: zoom(0.9);
           transform-origin: top center;
         }
-
         .notion-cursor-listener {
           width: 100% !important;
         }
-
         .layout {
           padding: 0 0 0 2rem;
         }
-
         .notion-topbar {
           display: none;
         }
-
         @media (max-width: 1200px) {
           .notion-page-content {
             padding: 10px;
             max-width: 95%;
           }
         }
-
         @media (max-width: 768px) {
           .notion-page-content {
             padding: 5px;

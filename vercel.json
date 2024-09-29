@@ -5,5 +5,24 @@
       "use": "@vercel/next"
     }
   ],
-  "routes": [{ "src": "/(.*)", "dest": "/index.html" }]
+  "functions": {
+    "api/puppeteer-preview-snapshot.js": {
+      "memory": 1024,
+      "maxDuration": 10
+    },
+    "api/deploy.js": {
+      "memory": 1024,
+      "maxDuration": 10
+    },
+    "api/deploy-partial.js": {
+      "memory": 1024,
+      "maxDuration": 10
+    }
+  },
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ]
 }
