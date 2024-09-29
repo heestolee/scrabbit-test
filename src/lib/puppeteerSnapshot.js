@@ -1,11 +1,20 @@
-import puppeteer from "puppeteer";
+import chromium from "chrome-aws-lambda";
+import puppeteer from "puppeteer-core";
 import fs from "fs";
 import path from "path";
 
-export default async function takeSnapshot(notionUrl, fileName) {
+export default async function takeSnapshot(
+  notionUrl,
+  fileName = "default-file-name",
+) {
   const browser = await puppeteer.launch({
     headless: true,
+    args: chromium.args,
+    defaultViewport: chromium.defaultViewport,
+    executablePath:
+      (await chromium.executablePath) || "/usr/bin/chromium-browser",
   });
+
   const page = await browser.newPage();
 
   await page.setViewport({
@@ -52,12 +61,15 @@ export default async function takeSnapshot(notionUrl, fileName) {
 
   const snapshotHtml = await page.content();
 
-  const cleanFileName = fileName.replace(/\?.*$/, "");
+  const cleanFileName = (fileName || "default-file-name").replace(/\?.*$/, "");
 
-  const filePath = path.resolve(
-    ".next/server/app/api/deploy-partial",
-    `${cleanFileName}.html`,
-  );
+  const directoryPath = path.resolve(".next/server/app/api/deploy-partial");
+  const filePath = path.join(directoryPath, `${cleanFileName}.html`);
+
+  if (!fs.existsSync(directoryPath)) {
+    fs.mkdirSync(directoryPath, { recursive: true });
+  }
+
   fs.writeFileSync(filePath, snapshotHtml);
 
   await browser.close();
