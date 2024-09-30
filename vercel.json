@@ -1,10 +1,4 @@
 {
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/next"
-    }
-  ],
   "functions": {
     "api/puppeteer-preview-snapshot.js": {
       "memory": 1024,
