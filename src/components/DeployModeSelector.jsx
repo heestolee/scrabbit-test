@@ -16,7 +16,7 @@ export default function DeployModeSelector({ deployMode, setDeployMode }) {
           colorScheme="blue"
         />
         <FormLabel htmlFor="deploy-mode-switch" mb="0">
-          {deployMode === "full" ? "Full Deploy" : "Partial Deploy"}
+          {deployMode === "full" ? "전체배포" : "부분배포"}
         </FormLabel>
       </FormControl>
     </Box>

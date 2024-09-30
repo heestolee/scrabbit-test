@@ -23,6 +23,7 @@ export default function NotionPageRenderer({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ notionUrl: `https://www.notion.so/${pageId}` }),
       });
+      console.log("페치프리뷰컨텐츠 리스폰스: ", response);
       if (!response.ok) throw new Error("노션 페이지 페칭 실패");
       const data = await response.json();
       snapshotHtmlRef.current = data.snapshotHtml;

@@ -36,7 +36,7 @@ export default function DomainInputArea({
           <span>.notiondrop.site</span>
         </Box>
         <Button type="submit" colorScheme="green" width="15rem">
-          Deploy
+          배포
         </Button>
       </form>
     </Box>
