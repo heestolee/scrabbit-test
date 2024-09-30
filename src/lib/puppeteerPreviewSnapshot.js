@@ -1,5 +1,4 @@
-import chrome from "chrome-aws-lambda";
-import puppeteer from "puppeteer-core";
+import { chrome, chromium } from "chrome-aws-lambda";
 
 export default async function takePreviewSnapshot(notionUrl) {
   console.log("Puppeteer 시작:", notionUrl);
@@ -9,7 +8,7 @@ export default async function takePreviewSnapshot(notionUrl) {
       ? await chrome.executablePath
       : "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
 
-  const browser = await puppeteer.launch({
+  const browser = await chromium.puppeteer.launch({
     headless: true,
     executablePath: executablePath || "/usr/bin/chromium-browser",
     args: [
