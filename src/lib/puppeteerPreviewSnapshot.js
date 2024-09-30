@@ -16,7 +16,11 @@ export default async function takePreviewSnapshot(notionUrl) {
       ...chrome.args,
       "--no-sandbox",
       "--disable-setuid-sandbox",
+      "--disable-dev-shm-usage",
+      "--disable-gpu",
       "--single-process",
+      "--disable-software-rasterizer",
+      "--no-zygote",
     ],
     defaultViewport: chrome.defaultViewport,
     ignoreHTTPSErrors: true,
@@ -28,17 +32,19 @@ export default async function takePreviewSnapshot(notionUrl) {
   try {
     console.log("Puppeteer 페이지 이동 중:", notionUrl);
 
+    // 페이지 이동 중 타임아웃 2분 설정
     await page.goto(notionUrl, {
-      waitUntil: "networkidle2",
-      timeout: 60000,
+      waitUntil: "networkidle2", // 모든 네트워크 요청이 완료된 시점
+      timeout: 120000, // 120초 타임아웃
     });
 
     console.log("Puppeteer 페이지 이동 완료");
 
+    // 폰트 및 이미지 로드 완료 대기
     await page.evaluateHandle("document.fonts.ready");
-
     console.log("폰트 로드 완료");
 
+    // 페이지 내부 이미지가 올바르게 로드되었는지 확인
     await page.evaluate(() => {
       const images = document.querySelectorAll("img");
       images.forEach((img) => {
@@ -49,6 +55,7 @@ export default async function takePreviewSnapshot(notionUrl) {
       });
     });
 
+    // 페이지의 기본 스타일 수정
     await page.evaluate(() => {
       const style = document.createElement("style");
       style.innerHTML = `
