@@ -1,20 +1,14 @@
 {
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/next"
-    }
-  ],
   "functions": {
-    "api/puppeteer-preview-snapshot.js": {
+    "api/puppeteer-preview-snapshot": {
       "memory": 1024,
       "maxDuration": 10
     },
-    "api/deploy.js": {
+    "api/deploy": {
       "memory": 1024,
       "maxDuration": 10
     },
-    "api/deploy-partial.js": {
+    "api/deploy-partial": {
       "memory": 1024,
       "maxDuration": 10
     }
