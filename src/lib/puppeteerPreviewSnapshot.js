@@ -18,6 +18,15 @@ export default async function takePreviewSnapshot(notionUrl) {
 
   await page.setViewport({ width: 1200, height: 800 });
 
+  await page.setRequestInterception(true);
+  page.on("request", (req) => {
+    if (req.resourceType() === "image") {
+      req.continue();
+    } else {
+      req.continue();
+    }
+  });
+
   try {
     console.log("Puppeteer 페이지 이동 중:", notionUrl);
 
@@ -42,6 +51,13 @@ export default async function takePreviewSnapshot(notionUrl) {
     });
 
     await page.evaluate(() => {
+      const targetDiv = Array.from(document.querySelectorAll("div")).find(
+        (div) => div.style.order === "3" && div.style.overflow === "hidden",
+      );
+      if (targetDiv) {
+        targetDiv.style.overflow = "unset";
+      }
+
       const style = document.createElement("style");
       style.innerHTML = `
         body {
@@ -60,12 +76,57 @@ export default async function takePreviewSnapshot(notionUrl) {
           width: 100% !important;
         }
 
+        .notion-scroller.vertical {
+          overflow: unset !important;
+        }
+
+        .pseudoSelection {
+          display: none !important;
+        }
+
         .layout {
           padding: 0 0 0 2rem;
         }
 
         .notion-topbar {
-        display: none
+          display: none;
+        }
+
+        .notion-bulleted_list-block {
+          list-style-type: disc;
+          margin-left: 20px;
+          display: list-item;
+        }
+
+        .notion-numbered_list-block {
+          list-style-type: decimal;
+          margin-left: 20px;
+          display: list-item;
+        }
+
+        ol {
+          list-style-type: none;
+          counter-reset: list-counter;
+          padding-left: 30px;
+        }
+
+        ol li {
+          counter-increment: list-counter;
+          margin-bottom: 10px;
+        }
+
+        ol li::before {
+          content: counter(list-counter) ". ";
+          margin-right: 5px;
+        }
+
+        ul {
+          list-style-type: disc;
+          padding-left: 30px;
+        }
+
+        ul li {
+          margin-bottom: 10px;
         }
 
         @media (max-width: 1200px) {

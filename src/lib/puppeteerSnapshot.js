@@ -31,19 +31,87 @@ export default async function takeSnapshot(notionUrl, fileName) {
     await page.evaluate(() => {
       const style = document.createElement("style");
       style.innerHTML = `
-        .notion-page {
-          max-width: 100% !important;
-          padding: 20px !important;
-        }
-        .notion-container {
-          padding: 20px !important;
-        }
-        img {
-          max-width: 100% !important;
-        }
         body {
-          margin: 0 !important;
-          padding: 0 !important;
+          margin: 0;
+          box-sizing: border-box;
+        }
+
+        .notion-page-content {
+          max-width: 900px;
+          margin: 0 auto;
+          transform: zoom(0.9);
+          transform-origin: top center;
+        }
+
+        .notion-cursor-listener {
+          width: 100% !important;
+        }
+
+        .notion-scroller.vertical {
+          overflow: unset !important;
+        }
+
+        .pseudoSelection {
+          display: none !important;
+        }
+
+        .layout {
+          padding: 0 0 0 2rem;
+        }
+
+        .notion-topbar {
+          display: none;
+        }
+
+        .notion-bulleted_list-block {
+          list-style-type: disc;
+          margin-left: 20px;
+          display: list-item;
+        }
+
+        .notion-numbered_list-block {
+          list-style-type: decimal;
+          margin-left: 20px;
+          display: list-item;
+        }
+
+        ol {
+          list-style-type: none;
+          counter-reset: list-counter;
+          padding-left: 30px;
+        }
+
+        ol li {
+          counter-increment: list-counter;
+          margin-bottom: 10px;
+        }
+
+        ol li::before {
+          content: counter(list-counter) ". ";
+          margin-right: 5px;
+        }
+
+        ul {
+          list-style-type: disc;
+          padding-left: 30px;
+        }
+
+        ul li {
+          margin-bottom: 10px;
+        }
+
+        @media (max-width: 1200px) {
+          .notion-page-content {
+            padding: 10px;
+            max-width: 95%;
+          }
+        }
+
+        @media (max-width: 768px) {
+          .notion-page-content {
+            padding: 5px;
+            max-width: 90%;
+          }
         }
       `;
       document.head.appendChild(style);
@@ -61,11 +129,14 @@ export default async function takeSnapshot(notionUrl, fileName) {
 
     const snapshotHtml = await page.content();
 
-    const cleanFileName = fileName.replace(/\?.*$/, "");
-    const filePath = path.resolve(
-      ".next/server/app/api/deploy-partial",
-      `${cleanFileName}.html`,
-    );
+    const cleanFileName = fileName ? fileName.replace(/\?.*$/, "") : "snapshot";
+    const snapshotDir = path.resolve(".next/server/app/api/deploy-partial");
+
+    if (!fs.existsSync(snapshotDir)) {
+      fs.mkdirSync(snapshotDir, { recursive: true });
+    }
+
+    const filePath = path.join(snapshotDir, `${cleanFileName}.html`);
     fs.writeFileSync(filePath, snapshotHtml);
 
     await browser.close();
