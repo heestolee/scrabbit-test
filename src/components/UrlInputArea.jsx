@@ -24,7 +24,7 @@ export default function UrlInputArea({ url, setUrl, handleFetch, isLoading }) {
           value={url}
           bg={"white"}
           onChange={(e) => setUrl(e.target.value)}
-          placeholder="Enter Notion page URL"
+          placeholder="노션 url을 입력해주세요"
           borderColor="gray.300"
           borderRadius="md"
           _focus={{ borderColor: "blue.500" }}
@@ -40,7 +40,7 @@ export default function UrlInputArea({ url, setUrl, handleFetch, isLoading }) {
         _hover={{ bg: "blue.400" }}
         boxShadow="md"
       >
-        Get Data
+        데이터 가져오기
       </Button>
     </Box>
   );
