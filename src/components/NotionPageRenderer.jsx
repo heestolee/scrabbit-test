@@ -112,8 +112,8 @@ export default function NotionPageRenderer({
   if (!snapshotHtmlRef.current) return <div>No data available.</div>;
 
   return (
-    <Box h="45rem" overflowY="hidden" textAlign="left" ref={pageRef}>
-      <div dangerouslySetInnerHTML={{ __html: snapshotHtmlRef.current }} />
+    <Box h="45rem" textAlign="left" ref={pageRef}>
+      <Box dangerouslySetInnerHTML={{ __html: snapshotHtmlRef.current }} />
     </Box>
   );
 }

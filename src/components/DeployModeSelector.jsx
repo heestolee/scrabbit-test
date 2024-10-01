@@ -7,16 +7,29 @@ export default function DeployModeSelector({ deployMode, setDeployMode }) {
   };
 
   return (
-    <Box mb={6}>
+    <Box>
       <FormControl display="flex" alignItems="center" justifyContent="center">
+        <FormLabel
+            htmlFor="deploy-mode-switch"
+            m="0"
+            color={deployMode === "full" ? "black" : "gray.300"}
+          >
+            전체배포
+          </FormLabel>
         <Switch
           id="deploy-mode-switch"
           isChecked={deployMode === "partial"}
           onChange={handleSwitchChange}
           colorScheme="blue"
+          gap={2}
+          px={2}
         />
-        <FormLabel htmlFor="deploy-mode-switch" mb="0">
-          {deployMode === "full" ? "전체배포" : "부분배포"}
+        <FormLabel
+          htmlFor="deploy-mode-switch"
+          mb="0"
+          color={deployMode === "full" ? "gray.500" : "black"}
+        >
+          부분배포
         </FormLabel>
       </FormControl>
     </Box>

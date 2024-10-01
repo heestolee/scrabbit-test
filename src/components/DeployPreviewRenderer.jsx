@@ -23,6 +23,21 @@ export default function DeployPreviewRenderer({
         flexDirection="column"
         height="80%"
         overflowY="scroll"
+        sx={{
+          "&::-webkit-scrollbar": {
+            width: "0.625rem",
+            padding: "0.625rem",
+            margin: "0.625rem",
+          },
+          "&::-webkit-scrollbar-track": {
+            background: "var(--chakra-colors-gray-400)",
+            borderRadius: "0.625rem",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            backgroundColor: "var(--chakra-colors-gray-500)",
+            borderRadius: "0.625rem",
+          },
+        }}
       >
         {selectedBlocksHtml && selectedBlocksHtml.length > 0 ? (
           selectedBlocksHtml.map((blockHtml, index) => (

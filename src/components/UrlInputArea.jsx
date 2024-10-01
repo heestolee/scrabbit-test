@@ -14,7 +14,7 @@ export default function UrlInputArea({ url, setUrl, handleFetch, isLoading }) {
       display="flex"
       flexDirection="row"
       justifyContent="space-between"
-      p={4}
+      py={4}
       gap={3}
       alignItems="center"
     >

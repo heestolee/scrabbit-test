@@ -144,7 +144,7 @@ export default function Home() {
           display="flex"
           flexDirection="column"
           alignItems="center"
-          maxH="50%"
+          h="50%"
         >
           <Box
             display="flex"
@@ -167,7 +167,29 @@ export default function Home() {
           </Box>
 
           {notionPageId && (
-            <Box h="100%" w="100%" mx="auto" bg="white">
+            <Box
+            h="100%"
+            w="100%"
+            mx="auto"
+            bg="white"
+            overflowY="auto"
+            overflowX="hidden"
+            sx={{
+              "&::-webkit-scrollbar": {
+                width: "0.625rem",
+                padding: "0.625rem",
+                margin: "0.625rem",
+              },
+              "&::-webkit-scrollbar-track": {
+                background: "var(--chakra-colors-gray-400)",
+                borderRadius: "0.625rem",
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "var(--chakra-colors-purple-300)",
+                borderRadius: "0.625rem",
+              },
+            }}
+          >
               {isLoading && <LoadingAnimation />}
               <NotionPageRenderer
                 notionPageId={notionPageId}

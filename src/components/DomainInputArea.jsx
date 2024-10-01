@@ -12,30 +12,37 @@ export default function DomainInputArea({
   };
 
   return (
-    <Box display="flex" flexDirection="row" alignItems="center" p={4} w="100%">
+    <Box display="flex" flexDirection="row" alignItems="center" py={4} w="100%">
       <form
         onSubmit={handleSubmit}
-        style={{ width: "100%", display: "flex", alignItems: "center" }}
+        style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between" }}
       >
-        <Box display="flex" w="full" alignItems="baseline" paddingRight={4}>
-          <FormControl>
+        <Box
+          display="flex"
+          bg={"white"}
+          borderRadius={"xl"}
+          height={"2.5rem"}
+          size="l"
+          px={3}
+        >
+          <FormControl display="flex" alignItems="baseline" px="2">
+            https://
             <Input
               id="subdomain"
-              height={"2.5rem"}
               type="text"
               value={subdomain}
               onChange={(e) => setSubdomain(e.target.value)}
-              placeholder="custom domain"
-              bg={"white"}
-              size="l"
+              placeholder="배포 URL 입력"
+              fontSize="12"
+              border="none"
+              minWidth="1"
               mr={2}
               pl={2}
-              borderRadius={"xl"}
             />
+            .notiondrop.site
           </FormControl>
-          <span>.notiondrop.site</span>
         </Box>
-        <Button type="submit" colorScheme="green" width="15rem">
+        <Button type="submit" colorScheme="green" width="10rem">
           배포
         </Button>
       </form>
