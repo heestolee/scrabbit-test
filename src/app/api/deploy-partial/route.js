@@ -73,7 +73,7 @@ export async function POST(request) {
       throw new Error("Failed to set custom domain.");
     }
 
-    return NextResponse.json({ url: `https://${subdomain}.notiondrop.site` });
+    return NextResponse.json({ url: `http://${subdomain}.notiondrop.site` });
   } catch (error) {
     console.error("Partial deploy error:", error);
     return NextResponse.json(
