@@ -15,7 +15,12 @@ export default function DomainInputArea({
     <Box display="flex" flexDirection="row" alignItems="center" py={4} w="100%">
       <form
         onSubmit={handleSubmit}
-        style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between" }}
+        style={{
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
       >
         <Box
           display="flex"

@@ -82,8 +82,10 @@ export default function NotionPageRenderer({
 
       if (selectedBlocks[blockId]) {
         block.style.border = "2px solid blue";
+        block.style.backgroundColor = "blue.50";
       } else {
         block.style.border = "none";
+        block.style.backgroundColor = "white";
       }
 
       block.addEventListener("mouseenter", () => {

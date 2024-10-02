@@ -10,12 +10,12 @@ export default function DeployModeSelector({ deployMode, setDeployMode }) {
     <Box>
       <FormControl display="flex" alignItems="center" justifyContent="center">
         <FormLabel
-            htmlFor="deploy-mode-switch"
-            m="0"
-            color={deployMode === "full" ? "black" : "gray.300"}
-          >
-            전체배포
-          </FormLabel>
+          htmlFor="deploy-mode-switch"
+          m="0"
+          color={deployMode === "full" ? "black" : "gray.300"}
+        >
+          전체배포
+        </FormLabel>
         <Switch
           id="deploy-mode-switch"
           isChecked={deployMode === "partial"}

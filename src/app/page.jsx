@@ -88,7 +88,9 @@ export default function Home() {
   };
 
   const handleSelectBlock = (blockId) => {
-    const parentBlockElement = document.querySelector(`[data-block-id="${blockId}"]`);
+    const parentBlockElement = document.querySelector(
+      `[data-block-id="${blockId}"]`,
+    );
     const childBlocks = parentBlockElement.querySelectorAll("[data-block-id]");
 
     setSelectedBlocks((prev) => {
@@ -123,8 +125,8 @@ export default function Home() {
           isRendered
             ? { zoom: 0.1, x: "-470vw" }
             : isLoading
-            ? { zoom: 0.1 }
-            : { zoom: 1 }
+              ? { zoom: 0.1 }
+              : { zoom: 1 }
         }
         transition={{ duration: 0.8 }}
         style={{
@@ -149,12 +151,7 @@ export default function Home() {
         justifyContent="space-around"
         height="100%"
       >
-        <Box
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          h="50%"
-        >
+        <Box display="flex" flexDirection="column" alignItems="center" h="50%">
           <Box
             display="flex"
             flexDirection={notionPageId ? "row" : "column"}
@@ -272,7 +269,12 @@ export default function Home() {
                   ml={2}
                   p={2.5}
                 >
-                  <Image src="/copy.svg" alt="Copy Icon" width={96} height={96} />
+                  <Image
+                    src="/copy.svg"
+                    alt="Copy Icon"
+                    width={96}
+                    height={96}
+                  />
                 </Button>
                 <p
                   style={{
