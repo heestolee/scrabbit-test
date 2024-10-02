@@ -88,10 +88,19 @@ export default function Home() {
   };
 
   const handleSelectBlock = (blockId) => {
-    setSelectedBlocks((prev) => ({
-      ...prev,
-      [blockId]: !prev[blockId],
-    }));
+    const parentBlockElement = document.querySelector(`[data-block-id="${blockId}"]`);
+    const childBlocks = parentBlockElement.querySelectorAll("[data-block-id]");
+
+    setSelectedBlocks((prev) => {
+      const newSelectedBlocks = { ...prev, [blockId]: !prev[blockId] };
+
+      childBlocks.forEach((child) => {
+        const childId = child.getAttribute("data-block-id");
+        newSelectedBlocks[childId] = newSelectedBlocks[blockId];
+      });
+
+      return newSelectedBlocks;
+    });
   };
 
   const closeModal = () => {
@@ -114,8 +123,8 @@ export default function Home() {
           isRendered
             ? { zoom: 0.1, x: "-470vw" }
             : isLoading
-              ? { zoom: 0.1 }
-              : { zoom: 1 }
+            ? { zoom: 0.1 }
+            : { zoom: 1 }
         }
         transition={{ duration: 0.8 }}
         style={{
@@ -168,28 +177,28 @@ export default function Home() {
 
           {notionPageId && (
             <Box
-            h="100%"
-            w="100%"
-            mx="auto"
-            bg="white"
-            overflowY="auto"
-            overflowX="hidden"
-            sx={{
-              "&::-webkit-scrollbar": {
-                width: "0.625rem",
-                padding: "0.625rem",
-                margin: "0.625rem",
-              },
-              "&::-webkit-scrollbar-track": {
-                background: "var(--chakra-colors-gray-400)",
-                borderRadius: "0.625rem",
-              },
-              "&::-webkit-scrollbar-thumb": {
-                backgroundColor: "var(--chakra-colors-purple-300)",
-                borderRadius: "0.625rem",
-              },
-            }}
-          >
+              h="100%"
+              w="100%"
+              mx="auto"
+              bg="white"
+              overflowY="auto"
+              overflowX="hidden"
+              sx={{
+                "&::-webkit-scrollbar": {
+                  width: "0.625rem",
+                  padding: "0.625rem",
+                  margin: "0.625rem",
+                },
+                "&::-webkit-scrollbar-track": {
+                  background: "var(--chakra-colors-gray-400)",
+                  borderRadius: "0.625rem",
+                },
+                "&::-webkit-scrollbar-thumb": {
+                  backgroundColor: "var(--chakra-colors-purple-300)",
+                  borderRadius: "0.625rem",
+                },
+              }}
+            >
               {isLoading && <LoadingAnimation />}
               <NotionPageRenderer
                 notionPageId={notionPageId}
@@ -251,7 +260,7 @@ export default function Home() {
                     textarea.select();
                     try {
                       document.execCommand("copy");
-                    setIsCopied(true);
+                      setIsCopied(true);
                     } catch (err) {
                       console.error("복사 중 오류 발생:", err);
                     } finally {
@@ -263,12 +272,7 @@ export default function Home() {
                   ml={2}
                   p={2.5}
                 >
-                  <Image
-                    src="/copy.svg"
-                    alt="Copy Icon"
-                    width={96}
-                    height={96}
-                  />
+                  <Image src="/copy.svg" alt="Copy Icon" width={96} height={96} />
                 </Button>
                 <p
                   style={{

@@ -23,7 +23,7 @@ export default function NotionPageRenderer({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ notionUrl: `https://www.notion.so/${pageId}` }),
       });
-      console.log("페치프리뷰컨텐츠 리스폰스: ", response);
+
       if (!response.ok) throw new Error("노션 페이지 페칭 실패");
       const data = await response.json();
       snapshotHtmlRef.current = data.snapshotHtml;
@@ -43,31 +43,31 @@ export default function NotionPageRenderer({
     (blockId, event) => {
       event.preventDefault();
       if (deployMode === "partial") {
-        handleSelectBlock(blockId);
-
         const blockElement = document.querySelector(
           `[data-block-id="${blockId}"]`,
         );
+        const childBlocks = blockElement.querySelectorAll("[data-block-id]");
 
-        if (blockElement) {
-          const cleanBlock = blockElement.cloneNode(true);
+        handleSelectBlock(blockId);
 
-          cleanBlock.style.zoom = "0.7";
+        childBlocks.forEach((child) => {
+          const childBlockId = child.getAttribute("data-block-id");
+          handleSelectBlock(childBlockId);
+        });
 
-          setSelectedBlocksHtml((prev) => {
-            if (selectedBlocks[blockId]) {
-              return prev.filter((block) => !block.includes(blockId));
-            } else {
-              const updatedBlocks = prev.filter(
-                (block) => !block.includes(blockId),
-              );
-              return [...updatedBlocks, cleanBlock.outerHTML];
-            }
-          });
-        }
+        const cleanBlock = blockElement.cloneNode(true);
+
+        cleanBlock.style.zoom = "0.7";
+
+        setSelectedBlocksHtml((prev) => {
+          const updatedBlocks = prev.filter(
+            (block) => !block.includes(blockId),
+          );
+          return [...updatedBlocks, cleanBlock.outerHTML];
+        });
       }
     },
-    [handleSelectBlock, deployMode, selectedBlocks, setSelectedBlocksHtml],
+    [handleSelectBlock, deployMode, setSelectedBlocksHtml],
   );
 
   useEffect(() => {
@@ -82,10 +82,8 @@ export default function NotionPageRenderer({
 
       if (selectedBlocks[blockId]) {
         block.style.border = "2px solid blue";
-        block.style.backgroundColor = "blue.50";
       } else {
         block.style.border = "none";
-        block.style.backgroundColor = "white";
       }
 
       block.addEventListener("mouseenter", () => {
@@ -103,7 +101,7 @@ export default function NotionPageRenderer({
 
     return () => {
       blockElements.forEach((block) => {
-        block.removeEventListener("click", (e) => handleBlockClick(block, e));
+        block.removeEventListener("click", (e) => handleBlockClick(blockId, e));
       });
     };
   }, [selectedBlocks, handleBlockClick, deployMode]);

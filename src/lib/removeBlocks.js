@@ -20,7 +20,18 @@ export default function removeUnselectedBlocksFromHtml(
 
   allBlocks.forEach((block) => {
     const blockId = block.getAttribute("data-block-id");
-    if (!selectedBlockIds.includes(blockId)) {
+
+    const parentBlockSelected = selectedBlockIds.includes(blockId);
+    const childBlocks = block.querySelectorAll("[data-block-id]");
+
+    if (
+      !parentBlockSelected &&
+      !selectedBlockIds.some(
+        (id) =>
+          childBlocks &&
+          block.contains(document.querySelector(`[data-block-id="${id}"]`)),
+      )
+    ) {
       block.remove();
     }
   });

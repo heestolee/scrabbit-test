@@ -92,6 +92,12 @@ export default async function takePreviewSnapshot(notionUrl) {
           display: none;
         }
 
+        .notion-numbered_list-block,
+        .notion-bulleted_list-block {
+          width: auto !important;
+          height: auto !important;
+        }
+
         .notion-bulleted_list-block {
           list-style-type: disc;
           margin-left: 20px;
