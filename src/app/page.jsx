@@ -244,8 +244,19 @@ export default function Home() {
                 <Button
                   bg="gray.300"
                   onClick={() => {
-                    navigator.clipboard.writeText(modalMessage.split(": ")[1]);
+                    const textToCopy = modalMessage.split(": ")[1];
+                    const textarea = document.createElement("textarea");
+                    textarea.value = textToCopy;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    try {
+                      document.execCommand("copy");
                     setIsCopied(true);
+                    } catch (err) {
+                      console.error("복사 중 오류 발생:", err);
+                    } finally {
+                      document.body.removeChild(textarea);
+                    }
                   }}
                   h={8}
                   w={10}
