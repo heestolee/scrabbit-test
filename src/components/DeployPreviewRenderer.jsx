@@ -1,12 +1,20 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Center } from "@chakra-ui/react";
 
 export default function DeployPreviewRenderer({
   deployMode,
   selectedBlocksHtml,
+  selectedBlocks,
+  setSelectedBlocksHtml
 }) {
+  const [renderedBlocks, setRenderedBlocks] = useState([]);
+
+  useEffect(() => {
+    setSelectedBlocksHtml(selectedBlocksHtml);
+  }, [selectedBlocks, selectedBlocksHtml]);
+
   return (
     <Center
       display="flex"
@@ -44,7 +52,7 @@ export default function DeployPreviewRenderer({
             <Box
               key={index}
               dangerouslySetInnerHTML={{ __html: blockHtml }}
-              borderColor="none"
+              // borderColor="none"
               h="max-content"
             />
           ))

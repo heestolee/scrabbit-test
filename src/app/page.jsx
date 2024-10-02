@@ -88,21 +88,10 @@ export default function Home() {
   };
 
   const handleSelectBlock = (blockId) => {
-    const parentBlockElement = document.querySelector(
-      `[data-block-id="${blockId}"]`,
-    );
-    const childBlocks = parentBlockElement.querySelectorAll("[data-block-id]");
-
-    setSelectedBlocks((prev) => {
-      const newSelectedBlocks = { ...prev, [blockId]: !prev[blockId] };
-
-      childBlocks.forEach((child) => {
-        const childId = child.getAttribute("data-block-id");
-        newSelectedBlocks[childId] = newSelectedBlocks[blockId];
-      });
-
-      return newSelectedBlocks;
-    });
+    setSelectedBlocks((prev) => ({
+      ...prev,
+      [blockId]: !prev[blockId],
+    }));
   };
 
   const closeModal = () => {
@@ -226,7 +215,9 @@ export default function Home() {
             />
             <DeployPreviewRenderer
               deployMode={deployMode}
+              selectedBlocks={selectedBlocks}
               selectedBlocksHtml={selectedBlocksHtml}
+              setSelectedBlocksHtml={setSelectedBlocksHtml}
               style={{ transform: "zoom(0.7)" }}
               width="90%"
             />
@@ -249,19 +240,13 @@ export default function Home() {
               <>
                 <Button
                   bg="gray.300"
-                  onClick={() => {
+                  onClick={async () => {
                     const textToCopy = modalMessage.split(": ")[1];
-                    const textarea = document.createElement("textarea");
-                    textarea.value = textToCopy;
-                    document.body.appendChild(textarea);
-                    textarea.select();
                     try {
-                      document.execCommand("copy");
+                      await navigator.clipboard.writeText(textToCopy);
                       setIsCopied(true);
                     } catch (err) {
                       console.error("복사 중 오류 발생:", err);
-                    } finally {
-                      document.body.removeChild(textarea);
                     }
                   }}
                   h={8}

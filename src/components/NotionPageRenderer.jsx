@@ -56,7 +56,6 @@ export default function NotionPageRenderer({
         });
 
         const cleanBlock = blockElement.cloneNode(true);
-
         cleanBlock.style.zoom = "0.7";
 
         setSelectedBlocksHtml((prev) => {
@@ -81,22 +80,21 @@ export default function NotionPageRenderer({
       block.addEventListener("click", (e) => handleBlockClick(blockId, e));
 
       if (selectedBlocks[blockId]) {
-        block.style.border = "2px solid blue";
-        block.style.backgroundColor = "blue.50";
+        block.style.outline = "2px solid #62aaff";
       } else {
-        block.style.border = "none";
+        block.style.outline = "none";
         block.style.backgroundColor = "white";
       }
 
       block.addEventListener("mouseenter", () => {
         if (!selectedBlocks[blockId]) {
-          block.style.border = "1px dashed lightgray";
+          block.style.outline = "1px dashed lightgray";
         }
       });
 
       block.addEventListener("mouseleave", () => {
         if (!selectedBlocks[blockId]) {
-          block.style.border = "none";
+          block.style.outline = "none";
         }
       });
     });

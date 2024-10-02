@@ -31,9 +31,18 @@ export default async function takePartialSnapshot(notionUrl, fileName) {
     await page.evaluate(() => {
       const style = document.createElement("style");
       style.innerHTML = `
+        .notion-page {
+          max-width: 100% !important;
+          padding: 20px !important;
+        }
+
+        .notion-container {
+          padding: 20px !important;
+        }
+
         body {
-          margin: 0;
-          box-sizing: border-box;
+          margin: 0 !important;
+          padding: 0 !important;
         }
 
         .notion-page-content {
@@ -41,14 +50,6 @@ export default async function takePartialSnapshot(notionUrl, fileName) {
           margin: 0 auto;
           transform: zoom(0.9);
           transform-origin: top center;
-        }
-
-        .notion-cursor-listener {
-          width: 100% !important;
-        }
-
-        .notion-scroller.vertical {
-          overflow: unset !important;
         }
 
         .pseudoSelection {

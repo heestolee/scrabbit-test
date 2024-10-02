@@ -27,7 +27,7 @@ export default function DeployModeSelector({ deployMode, setDeployMode }) {
         <FormLabel
           htmlFor="deploy-mode-switch"
           mb="0"
-          color={deployMode === "full" ? "gray.500" : "black"}
+          color={deployMode === "full" ? "gray.300" : "black"}
         >
           부분배포
         </FormLabel>

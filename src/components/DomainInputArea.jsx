@@ -31,7 +31,7 @@ export default function DomainInputArea({
           px={3}
         >
           <FormControl display="flex" alignItems="baseline" px="2">
-            https://
+            http://
             <Input
               id="subdomain"
               type="text"
