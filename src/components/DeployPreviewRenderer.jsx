@@ -7,9 +7,8 @@ export default function DeployPreviewRenderer({
   deployMode,
   selectedBlocksHtml,
   selectedBlocks,
-  setSelectedBlocksHtml
+  setSelectedBlocksHtml,
 }) {
-  const [renderedBlocks, setRenderedBlocks] = useState([]);
 
   useEffect(() => {
     setSelectedBlocksHtml(selectedBlocksHtml);
