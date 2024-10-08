@@ -44,15 +44,18 @@ export default function DeployPreviewRenderer({
             borderRadius: "0.625rem",
           },
         }}
+        style={{ zoom: 0.6 }}
       >
         {selectedBlocksHtml && selectedBlocksHtml.length > 0 ? (
-          selectedBlocksHtml.map((blockHtml, index) => (
-            <Box
-              key={index}
-              dangerouslySetInnerHTML={{ __html: blockHtml }}
-              h="max-content"
-            />
-          ))
+          selectedBlocksHtml
+            .sort((a, b) => a.index - b.index)
+            .map((block, index) => (
+              <Box
+                key={index}
+                dangerouslySetInnerHTML={{ __html: block.html }}
+                h="max-content"
+              />
+            ))
         ) : deployMode === "full" ? (
           <Center>전체배포 모드입니다.</Center>
         ) : (

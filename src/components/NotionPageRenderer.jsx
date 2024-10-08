@@ -44,20 +44,22 @@ export default function NotionPageRenderer({
       event.preventDefault();
       const blockElement = event.currentTarget;
       const closestTopBlock = blockElement.closest('.notion-page-content > *');
-      const topBlockId = closestTopBlock.getAttribute("data-block-id");
+      const topBlockId = closestTopBlock?.getAttribute("data-block-id");
+      const blockIndex = [...closestTopBlock.parentElement.children].indexOf(closestTopBlock);
 
-      if (deployMode === "partial") {
+      if (deployMode === "partial" && topBlockId) {
         handleSelectBlock(topBlockId);
         setSelectedBlocksHtml((prev) => {
-          if (prev.some(block => block.includes(topBlockId))) {
-            return prev.filter(block => !block.includes(topBlockId));
+          if (prev.some(block => block.id === topBlockId)) {
+            return prev.filter(block => block.id !== topBlockId);
           }
-          return [...prev, closestTopBlock.outerHTML];
+          return [...prev, { id: topBlockId, index: blockIndex, html: closestTopBlock.outerHTML }];
         });
       }
     },
     [handleSelectBlock, deployMode, setSelectedBlocksHtml],
   );
+
   useEffect(() => {
     if (deployMode !== "partial") return;
     const blockElements = document.querySelectorAll(".notion-page-content > *");

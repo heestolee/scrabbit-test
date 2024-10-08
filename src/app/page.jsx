@@ -218,7 +218,6 @@ export default function Home() {
               selectedBlocks={selectedBlocks}
               selectedBlocksHtml={selectedBlocksHtml}
               setSelectedBlocksHtml={setSelectedBlocksHtml}
-              style={{ transform: "zoom(0.7)" }}
               width="90%"
             />
           </Box>
