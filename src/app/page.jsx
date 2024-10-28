@@ -54,15 +54,14 @@ export default function Home() {
 
   const handleDeploy = async () => {
     if (!subdomain) {
-      alert("Enter your subdomain");
+      alert("도메인을 입력하세요.");
       return;
     }
 
     try {
       const notionUrl = url;
-      const apiEndpoint =
-        deployMode === "partial" ? "/api/deploy-partial" : "/api/deploy";
-
+      const apiEndpoint = deployMode === "partial" ? "/api/deploy-partial" : "/api/deploy";
+      setIsLoading(true);
       const response = await fetch(apiEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -75,15 +74,24 @@ export default function Home() {
         }),
       });
 
-      if (!response.ok) throw new Error("배포에 실패했습니다.");
       const data = await response.json();
 
-      setModalMessage(`배포된 사이트: ${data.url}`);
+      if (response.ok) {
+        setModalMessage(`배포된 사이트: ${data.url}`);
+      }
+      else if (response.status === 400 && data.error.includes("동일한 도메인이 이미 존재합니다")) {
+        setModalMessage(data.error);
+      }
+      else {
+        setModalMessage("배포에 실패했습니다. 다시 시도해주세요.");
+      }
       setIsModalOpen(true);
     } catch (error) {
       console.error("배포 중 오류 발생:", error);
       setModalMessage("배포에 실패했습니다. 다시 시도해주세요.");
       setIsModalOpen(true);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -96,6 +104,7 @@ export default function Home() {
 
   const closeModal = () => {
     setIsModalOpen(false);
+    setIsCopied(false);
   };
 
   return (
@@ -114,8 +123,8 @@ export default function Home() {
           isRendered
             ? { zoom: 0.1, x: "-470vw" }
             : isLoading
-              ? { zoom: 0.1 }
-              : { zoom: 1 }
+            ? { zoom: 0.1 }
+            : { zoom: 1 }
         }
         transition={{ duration: 0.8 }}
         style={{
@@ -228,8 +237,10 @@ export default function Home() {
         <ModalOverlay width={"100%"} height={"100%"} />
         <ModalContent>
           <ModalHeader>
-            {modalMessage.includes("https://")
+            {modalMessage.includes("배포된")
               ? "배포 완료!"
+              : modalMessage.includes("도메인")
+              ? "도메인 중복 오류"
               : "배포 중 오류 발생"}
           </ModalHeader>
           <ModalCloseButton />

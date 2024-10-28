@@ -43,17 +43,26 @@ export default function NotionPageRenderer({
     (event) => {
       event.preventDefault();
       const blockElement = event.currentTarget;
-      const closestTopBlock = blockElement.closest('.notion-page-content > *');
+      const closestTopBlock = blockElement.closest(".notion-page-content > *");
       const topBlockId = closestTopBlock?.getAttribute("data-block-id");
-      const blockIndex = [...closestTopBlock.parentElement.children].indexOf(closestTopBlock);
+      const blockIndex = [...closestTopBlock.parentElement.children].indexOf(
+        closestTopBlock,
+      );
 
       if (deployMode === "partial" && topBlockId) {
         handleSelectBlock(topBlockId);
         setSelectedBlocksHtml((prev) => {
-          if (prev.some(block => block.id === topBlockId)) {
-            return prev.filter(block => block.id !== topBlockId);
+          if (prev.some((block) => block.id === topBlockId)) {
+            return prev.filter((block) => block.id !== topBlockId);
           }
-          return [...prev, { id: topBlockId, index: blockIndex, html: closestTopBlock.outerHTML }];
+          return [
+            ...prev,
+            {
+              id: topBlockId,
+              index: blockIndex,
+              html: closestTopBlock.outerHTML,
+            },
+          ];
         });
       }
     },
@@ -78,6 +87,7 @@ export default function NotionPageRenderer({
       block.addEventListener("mouseenter", () => {
         if (!selectedBlocks[topBlockId]) {
           block.style.outline = "1px dashed lightgray";
+          block.style.cursor = "pointer";
         }
       });
 

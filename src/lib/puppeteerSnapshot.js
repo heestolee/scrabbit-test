@@ -47,10 +47,6 @@ export default async function takeSnapshot(notionUrl, fileName) {
           width: 100% !important;
         }
 
-        .notion-scroller.vertical {
-          overflow: unset !important;
-        }
-
         .pseudoSelection {
           display: none !important;
         }
@@ -128,9 +124,8 @@ export default async function takeSnapshot(notionUrl, fileName) {
     });
 
     const snapshotHtml = await page.content();
-
     const cleanFileName = fileName ? fileName.replace(/\?.*$/, "") : "snapshot";
-    const snapshotDir = path.resolve(".next/server/app/api/deploy-partial");
+    const snapshotDir = path.resolve("out");
 
     if (!fs.existsSync(snapshotDir)) {
       fs.mkdirSync(snapshotDir, { recursive: true });
@@ -138,7 +133,6 @@ export default async function takeSnapshot(notionUrl, fileName) {
 
     const filePath = path.join(snapshotDir, `${cleanFileName}.html`);
     fs.writeFileSync(filePath, snapshotHtml);
-
     await browser.close();
     return filePath;
   } catch (error) {

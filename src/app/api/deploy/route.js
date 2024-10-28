@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
-import takeSnapshot from "@/lib/puppeteerSnapshot";
 import fs from "fs";
+
+import takeSnapshot from "@/lib/puppeteerSnapshot";
 
 export async function POST(request) {
   const { pageId, subdomain, notionUrl } = await request.json();
@@ -10,6 +11,35 @@ export async function POST(request) {
       notionUrl,
       `snapshot-${pageId}`,
     );
+
+    const projectName = `notion-${subdomain}-${pageId}`;
+
+    const domainCheckResponse = await fetch(
+      `https://api.vercel.com/v9/projects/${projectName}/domains`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${process.env.VERCEL_TOKEN}`,
+        },
+      },
+    );
+    if (domainCheckResponse.ok) {
+      const domainData = await domainCheckResponse.json();
+      if (
+        domainData.domains &&
+        domainData.domains.some(
+          (domain) => domain.name === `${subdomain}.notiondrop.site`,
+        )
+      ) {
+        return NextResponse.json(
+          {
+            error:
+              "동일한 도메인이 이미 존재합니다.\n다른 서브도메인을 입력해주세요.",
+          },
+          { status: 400 },
+        );
+      }
+    }
 
     const snapshotHtml = fs.readFileSync(snapshotFilePath, "utf8");
 
@@ -22,7 +52,7 @@ export async function POST(request) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name: "notion-partial",
+          name: projectName,
           files: [
             {
               file: "index.html",
@@ -31,9 +61,11 @@ export async function POST(request) {
           ],
           target: "production",
           projectSettings: {
-            buildCommand: null,
-            installCommand: null,
+            devCommand: "npm run dev",
+            installCommand: "npm install",
+            buildCommand: "npm run build",
             outputDirectory: "",
+            framework: "nextjs",
           },
         }),
       },
