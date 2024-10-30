@@ -80,9 +80,8 @@ export default function Home() {
         body: JSON.stringify({
           notionPageId,
           subdomain,
-          notionUrl,
           deployMode,
-          selectedBlocks,
+          selectedBlocksHtml,
         }),
       });
 

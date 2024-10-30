@@ -6,12 +6,7 @@ import { Box, Center } from "@chakra-ui/react";
 export default function DeployPreviewRenderer({
   deployMode,
   selectedBlocksHtml,
-  selectedBlocks,
-  setSelectedBlocksHtml,
 }) {
-  useEffect(() => {
-    setSelectedBlocksHtml(selectedBlocksHtml);
-  }, [selectedBlocks, selectedBlocksHtml]);
 
   return (
     <Center
@@ -48,10 +43,10 @@ export default function DeployPreviewRenderer({
       >
         {selectedBlocksHtml && selectedBlocksHtml.length > 0 ? (
           selectedBlocksHtml
-            .sort((a, b) => a.index - b.index)
-            .map((block, index) => (
+            .sort((a, b) => a.order - b.order)
+            .map((block, order) => (
               <Box
-                key={index}
+                key={order}
                 dangerouslySetInnerHTML={{ __html: block.html }}
                 h="max-content"
               />

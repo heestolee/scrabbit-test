@@ -18,11 +18,15 @@ export default function NotionPageRenderer({
       const blockElement = event.currentTarget;
       const closestTopBlock = blockElement.closest(".notion-page-content > *");
       const topBlockId = closestTopBlock?.getAttribute("data-block-id");
-      const blockIndex = [...closestTopBlock.parentElement.children].indexOf(
+      const blockOrder = [...closestTopBlock.parentElement.children].indexOf(
         closestTopBlock,
       );
 
       if (deployMode === "partial" && topBlockId) {
+
+        closestTopBlock.style.outline = "none";
+        closestTopBlock.style.cursor = "none";
+
         handleSelectBlock(topBlockId);
         setSelectedBlocksHtml((prev) => {
           if (prev.some((block) => block.id === topBlockId)) {
@@ -32,7 +36,7 @@ export default function NotionPageRenderer({
             ...prev,
             {
               id: topBlockId,
-              index: blockIndex,
+              order: blockOrder,
               html: closestTopBlock.outerHTML,
             },
           ];

@@ -6,13 +6,7 @@ import removeUnselectedBlocksFromHtml from "@/lib/removeBlocks";
 
 export async function POST(request) {
   try {
-    const { pageId, subdomain, notionUrl, selectedBlocks } =
-      await request.json();
-
-    const snapshotFilePath = await takePartialSnapshot(
-      notionUrl,
-      `snapshot-${pageId}`,
-    );
+    const { pageId, subdomain, selectedBlocksHtml } = await request.json();
 
     const projectName = `notion-${subdomain}-${pageId}`;
 
@@ -25,6 +19,7 @@ export async function POST(request) {
         },
       },
     );
+
     if (domainCheckResponse.ok) {
       const domainData = await domainCheckResponse.json();
       if (
@@ -43,11 +38,10 @@ export async function POST(request) {
       }
     }
 
-    const snapshotHtml = fs.readFileSync(snapshotFilePath, "utf8");
-    const cleanedHtml = removeUnselectedBlocksFromHtml(
-      snapshotHtml,
-      selectedBlocks,
-    );
+    const combinedHtml = selectedBlocksHtml
+      .sort((a, b) => a.order - b.order)
+      .map((block) => block.html)
+      .join("\n");
 
     const vercelResponse = await fetch(
       "https://api.vercel.com/v13/deployments",
@@ -62,7 +56,7 @@ export async function POST(request) {
           files: [
             {
               file: "index.html",
-              data: cleanedHtml,
+              data: combinedHtml,
             },
           ],
           target: "production",
