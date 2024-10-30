@@ -1,8 +1,5 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-
-import takePartialSnapshot from "@/lib/puppeteerPartialSnapshot";
-import removeUnselectedBlocksFromHtml from "@/lib/removeBlocks";
+import { waitForSSLCertification } from "@/lib/waitForSSLCertification";
 
 export async function POST(request) {
   try {
@@ -97,7 +94,9 @@ export async function POST(request) {
       throw new Error("Failed to set custom domain.");
     }
 
-    return NextResponse.json({ url: `http://${subdomain}.notiondrop.site` });
+    waitForSSLCertification(subdomain);
+
+    return NextResponse.json({ url: `https://${subdomain}.notiondrop.site` });
   } catch (error) {
     console.error("Partial deploy error:", error);
     return NextResponse.json(

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import fs from "fs";
 
 import takeSnapshot from "@/lib/puppeteerSnapshot";
+import { waitForSSLCertification } from "@/lib/waitForSSLCertification";
 
 export async function POST(request) {
   const { pageId, subdomain, notionUrl } = await request.json();
@@ -97,7 +98,9 @@ export async function POST(request) {
       throw new Error("Failed to set custom domain.");
     }
 
-    return NextResponse.json({ url: `http://${subdomain}.notiondrop.site` });
+    waitForSSLCertification(subdomain);
+
+    return NextResponse.json({ url: `https://${subdomain}.notiondrop.site` });
   } catch (error) {
     console.error("Deploy error:", error);
     return NextResponse.json({ error: "Deploy failed" }, { status: 500 });
