@@ -25,6 +25,7 @@ import {
 export default function Home() {
   const [deployMode, setDeployMode] = useState("full");
   const [notionUrl, setNotionUrl] = useState("");
+  const [snapshotHtml, setSnapshotHtml] = useState(null);
   const [subdomain, setSubdomain] = useState("");
   const [notionPageId, setNotionPageId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -36,20 +37,32 @@ export default function Home() {
   const [isCopied, setIsCopied] = useState(false);
   const renderSectionRef = useRef(null);
 
-  const handleFetch = () => {
-    if (!url) {
+  const handleFetch = async () => {
+    if (!notionUrl) {
       alert("Notion URL을 입력하세요.");
       return;
     }
 
     setIsLoading(true);
-    const pageId = url.split("/").pop();
+    const pageId = notionUrl.split("/").pop();
     setNotionPageId(pageId);
-  };
 
-  const handleSnapshotReady = () => {
-    setIsLoading(false);
-    setIsRendered(true);
+    try {
+      const response = await fetch("/api/puppeteer-preview-snapshot", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ notionUrl: notionUrl }),
+      });
+      if (!response.ok) throw new Error("노션 페이지 페칭 실패");
+
+      const data = await response.json();
+      setSnapshotHtml(data.snapshotHtml);
+      setIsRendered(true);
+    } catch (error) {
+      console.error("노션 페이지 페칭 에러:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleDeploy = async () => {
@@ -194,14 +207,13 @@ export default function Home() {
               }}
             >
               {isLoading && <LoadingAnimation />}
-              <NotionPageRenderer
-                notionPageId={notionPageId}
-                deployMode={deployMode}
-                onSnapshotReady={handleSnapshotReady}
-                selectedBlocks={selectedBlocks}
-                handleSelectBlock={handleSelectBlock}
-                setSelectedBlocksHtml={setSelectedBlocksHtml}
-              />
+            {snapshotHtml && <NotionPageRenderer
+              deployMode={deployMode}
+              snapshotHtml={snapshotHtml}
+              selectedBlocks={selectedBlocks}
+              handleSelectBlock={handleSelectBlock}
+              setSelectedBlocksHtml={setSelectedBlocksHtml}
+            />}
             </Box>
           )}
         </Box>

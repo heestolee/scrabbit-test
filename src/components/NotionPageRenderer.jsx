@@ -1,43 +1,16 @@
 "use client";
 
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 import { Box } from "@chakra-ui/react";
 
 export default function NotionPageRenderer({
-  notionPageId,
+  snapshotHtml,
   deployMode,
-  onSnapshotReady,
   selectedBlocks,
   handleSelectBlock,
   setSelectedBlocksHtml,
 }) {
-  const [isLoading, setIsLoading] = useState(true);
-  const snapshotHtmlRef = useRef(null);
   const pageRef = useRef(null);
-
-  async function fetchPreviewContent(pageId) {
-    try {
-      setIsLoading(true);
-      const response = await fetch("/api/puppeteer-preview-snapshot", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ notionUrl: `https://www.notion.so/${pageId}` }),
-      });
-
-      if (!response.ok) throw new Error("노션 페이지 페칭 실패");
-      const data = await response.json();
-      snapshotHtmlRef.current = data.snapshotHtml;
-      onSnapshotReady();
-    } catch (error) {
-      console.error("노션 페이지 페칭 에러:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    if (notionPageId) fetchPreviewContent(notionPageId);
-  }, [notionPageId]);
 
   const handleBlockClick = useCallback(
     (event) => {
@@ -105,12 +78,11 @@ export default function NotionPageRenderer({
     };
   }, [selectedBlocks, handleBlockClick, deployMode]);
 
-  if (isLoading) return null;
-  if (!snapshotHtmlRef.current) return <div>No data available.</div>;
+  if (!snapshotHtml) return <div>No data available.</div>;
 
   return (
     <Box h="45rem" textAlign="left" ref={pageRef}>
-      <Box dangerouslySetInnerHTML={{ __html: snapshotHtmlRef.current }} />
+      <Box dangerouslySetInnerHTML={{ __html: snapshotHtml }} />
     </Box>
   );
 }
