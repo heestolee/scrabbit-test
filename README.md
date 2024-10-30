@@ -32,7 +32,7 @@
   - [2-1. Next.js의 App router 구조로 프로젝트를 설계한 이유](#2-1-nextjs%EC%9D%98-app-router-%EA%B5%AC%EC%A1%B0%EB%A1%9C-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%EB%A5%BC-%EC%84%A4%EA%B3%84%ED%95%9C-%EC%9D%B4%EC%9C%A0)
   - [2-2. 노션에 기록된 내용을 SSR방식으로 렌더링해서 가져오기](#2-2-%EB%85%B8%EC%85%98%EC%97%90-%EA%B8%B0%EB%A1%9D%EB%90%9C-%EB%82%B4%EC%9A%A9%EC%9D%84-ssr%EB%B0%A9%EC%8B%9D%EC%9C%BC%EB%A1%9C-%EB%A0%8C%EB%8D%94%EB%A7%81%ED%95%B4%EC%84%9C-%EA%B0%80%EC%A0%B8%EC%98%A4%EA%B8%B0)
   - [2-3. 부분 배포 기능 구현 시 선택한 블럭만 지정해서 SSG 방식으로 생성하기](#2-3-%EB%B6%80%EB%B6%84-%EB%B0%B0%ED%8F%AC-%EA%B8%B0%EB%8A%A5-%EA%B5%AC%ED%98%84-%EC%8B%9C-%EC%84%A0%ED%83%9D%ED%95%9C-%EB%B8%94%EB%9F%AD%EB%A7%8C-%EC%A7%80%EC%A0%95%ED%95%B4%EC%84%9C-ssg-%EB%B0%A9%EC%8B%9D%EC%9C%BC%EB%A1%9C-%EC%83%9D%EC%84%B1%ED%95%98%EA%B8%B0)
-    - [[1] SSG 방식을 사용한 이유](#1-ssg-%EB%B0%A9%EC%8B%9D%EC%9D%84-%EC%82%AC%EC%9A%A9%ED%95%9C-%EC%9D%B4%EC%9C%A0)
+    - [[1] SSG 방식의 성능적 이점](#1-ssg-%EB%B0%A9%EC%8B%9D%EC%9D%98-%EC%84%B1%EB%8A%A5%EC%A0%81-%EC%9D%B4%EC%A0%90)
     - [[2] SSG 방식의 기술적 이점](#2-ssg-%EB%B0%A9%EC%8B%9D%EC%9D%98-%EA%B8%B0%EC%88%A0%EC%A0%81-%EC%9D%B4%EC%A0%90)
   - [2-4. Vercel을 활용하여 서브도메인 부여하기](#2-4-vercel%EC%9D%84-%ED%99%9C%EC%9A%A9%ED%95%98%EC%97%AC-%EC%84%9C%EB%B8%8C%EB%8F%84%EB%A9%94%EC%9D%B8-%EB%B6%80%EC%97%AC%ED%95%98%EA%B8%B0)
 
@@ -48,6 +48,9 @@
   - [3-3. 배포 구성 미리 보기 기능 구현](#3-3-%EB%B0%B0%ED%8F%AC-%EA%B5%AC%EC%84%B1-%EB%AF%B8%EB%A6%AC-%EB%B3%B4%EA%B8%B0-%EA%B8%B0%EB%8A%A5-%EA%B5%AC%ED%98%84)
     - [[1] 사용자 편의를 고려한 배포 미리 보기 기능](#1-%EC%82%AC%EC%9A%A9%EC%9E%90-%ED%8E%B8%EC%9D%98%EB%A5%BC-%EA%B3%A0%EB%A0%A4%ED%95%9C-%EB%B0%B0%ED%8F%AC-%EB%AF%B8%EB%A6%AC-%EB%B3%B4%EA%B8%B0-%EA%B8%B0%EB%8A%A5)
     - [[2] `useState`만으로 실시간 미리보기 렌더링 구현](#2-usestate%EB%A7%8C%EC%9C%BC%EB%A1%9C-%EC%8B%A4%EC%8B%9C%EA%B0%84-%EB%AF%B8%EB%A6%AC%EB%B3%B4%EA%B8%B0-%EB%A0%8C%EB%8D%94%EB%A7%81-%EA%B5%AC%ED%98%84)
+  - [3-4. retry 패턴을 응용한 polling으로 SSL 인증 안정성 확보](#3-4-retry-%ED%8C%A8%ED%84%B4%EC%9D%84-%EC%9D%91%EC%9A%A9%ED%95%9C-polling%EC%9C%BC%EB%A1%9C-ssl-%EC%9D%B8%EC%A6%9D-%EC%95%88%EC%A0%95%EC%84%B1-%ED%99%95%EB%B3%B4)
+    - [[1] Vercel이 제공하는 LetsEncrypt를 이용한 SSL인증서 등록 과정 중 겪게 된 SSL인증서 등록 지연 현상](#1-vercel%EC%9D%B4-%EC%A0%9C%EA%B3%B5%ED%95%98%EB%8A%94-letsencrypt%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-ssl%EC%9D%B8%EC%A6%9D%EC%84%9C-%EB%93%B1%EB%A1%9D-%EA%B3%BC%EC%A0%95-%EC%A4%91-%EA%B2%AA%EA%B2%8C-%EB%90%9C-ssl%EC%9D%B8%EC%A6%9D%EC%84%9C-%EB%93%B1%EB%A1%9D-%EC%A7%80%EC%97%B0-%ED%98%84%EC%83%81)
+    - [[2] Retry 패턴을 응용하여 polling 구현](#2-retry-%ED%8C%A8%ED%84%B4%EC%9D%84-%EC%9D%91%EC%9A%A9%ED%95%98%EC%97%AC-polling-%EA%B5%AC%ED%98%84)
 
 - [4. 회고](#4-%ED%9A%8C%EA%B3%A0)
 
@@ -304,6 +307,40 @@ SSG의 특징은 **빌드 시점에 한번만 렌더링하기에 매 요청마�
 또한 매번 업데이트될 때마다 블럭들을 오름차순으로 정렬하도록 하여 실제 배포 페이지에 보이는 블럭 순서대로 미리보기 화면에 나타나도록 구현했습니다.
 
 이를 통해 사용자는 선택한 블럭이 실제로 어떻게 배포될지를 직관적으로 확인할 수 있게 하고, 빈번한 상태 업데이트로 인한 성능 저하를 줄이기 위해 `useMemo`를 사용하여 불필요한 리렌더링을 방지했습니다.
+
+## 3-4. retry 패턴을 응용한 polling으로 SSL 인증 안정성 확보
+
+### [1] Vercel이 제공하는 LetsEncrypt를 이용한 SSL인증서 등록 과정 중 겪게 된 SSL인증서 등록 지연 현상
+
+Vercel은 LetsEncrypt라는 서비스를 제공하여 배포 시 자동으로 SSL 인증서 등록을 해줍니다.
+
+SSL 인증서를 등록을 대신 작업해주는건 감사한 일이었으나, 즉시 발급이 되는 경우도 있었고 간혹 수 십초 정도 발급이 지연되는 경우도 있었기 때문에 일관성있는 결과를 제공할 필요를 느꼈습니다.
+
+<br>
+
+| ![ssl-check](public/image/ssl-check.png)                                                |
+| --------------------------------------------------------------------------------------- |
+| 배포가 완료되어도 페이지에 접근을 못하고 SSL 인증서 등록을 기다려야 할 때도 있었습니다. |
+
+<br>
+
+배포되는 즉시 사용자에게 페이지를 제공하면 간혹 보안 위협이 있는 불완전한 웹 페이지를 제공할 수도 있으니, SSL 인증서 등록이 완료된 후 제공하는 방법이 있는지 확인해보았고 아쉽게도 Vercel 서비스 중 SSL 인증서 등록을 확인해주는건 없었기 때문에, 직접 이를 확인하는 로직을 구현해야 했습니다.
+
+<br>
+
+### [2] Retry 패턴을 응용하여 polling 구현
+
+polling은 일정한 주기로 서버와 응답을 주고 받아 특정 조건을 만족할 때 송수신 등의 자료 처리를 하는 방식입니다.
+
+보통 클라이언트와 서버 사이에 사용하는 경우가 일반적이지만, 이미 클라이언트에서 API 라우트에 요청을 보내 페이지를 배포하는 작업을 하고 있었기 때문에 굳이 클라이언트로 돌아와 polling을 적용하는 것보다 서버에서 페이지 배포 후 SSL 등록이 완료됨을 확인하고 한번에 클라이언트로 응답을 보내는 것이 더 효율적이라고 판단했습니다.
+
+<br>
+
+![polling](public/image/polling.png)
+
+<br>
+
+그래서 서버에서 delay나 timeout등의 경우에 사용하는 retry패턴을 응용하여 polling 로직을 구현하고, SSL등록이 완료되어 배포된 페이지에 안전하게 접근 가능하게 되었을 때 클라이언트로 응답을 보내 사용자에게 링크를 제공하도록 구현하였습니다.
 
 <br><br>
 
