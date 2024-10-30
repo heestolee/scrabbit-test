@@ -1,7 +1,12 @@
 import React from "react";
 import { Box, Input, Button, FormControl } from "@chakra-ui/react";
 
-export default function UrlInputArea({ url, setUrl, handleFetch, isLoading }) {
+export default function UrlInputArea({
+  notionUrl,
+  setNotionUrl,
+  handleFetch,
+  isLoading,
+}) {
   const handleSubmit = (event) => {
     event.preventDefault();
     handleFetch();
@@ -21,9 +26,9 @@ export default function UrlInputArea({ url, setUrl, handleFetch, isLoading }) {
       <FormControl width="50rem" isRequired>
         <Input
           type="text"
-          value={url}
+          value={notionUrl}
           bg={"white"}
-          onChange={(e) => setUrl(e.target.value)}
+          onChange={(e) => setNotionUrl(e.target.value)}
           placeholder="노션 url을 입력해주세요"
           borderColor="gray.300"
           borderRadius="md"

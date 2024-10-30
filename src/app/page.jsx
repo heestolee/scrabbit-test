@@ -24,7 +24,7 @@ import {
 
 export default function Home() {
   const [deployMode, setDeployMode] = useState("full");
-  const [url, setUrl] = useState("");
+  const [notionUrl, setNotionUrl] = useState("");
   const [subdomain, setSubdomain] = useState("");
   const [notionPageId, setNotionPageId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -59,7 +59,6 @@ export default function Home() {
     }
 
     try {
-      const notionUrl = url;
       const apiEndpoint = deployMode === "partial" ? "/api/deploy-partial" : "/api/deploy";
       setIsLoading(true);
       const response = await fetch(apiEndpoint, {
@@ -163,8 +162,8 @@ export default function Home() {
             />
             <UrlInputArea
               deployMode={deployMode}
-              url={url}
-              setUrl={setUrl}
+              notionUrl={notionUrl}
+              setNotionUrl={setNotionUrl}
               handleFetch={handleFetch}
               isLoading={isLoading}
             />
