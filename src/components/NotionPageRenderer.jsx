@@ -1,6 +1,12 @@
 "use client";
 
-import React, { useEffect, useRef, useCallback, useState, useMemo } from "react";
+import React, {
+  useEffect,
+  useRef,
+  useCallback,
+  useState,
+  useMemo,
+} from "react";
 import { Box } from "@chakra-ui/react";
 import { PSEUDO_ELEMENTS_STYLE } from "constant/constant";
 
@@ -32,7 +38,9 @@ export default function NotionPageRenderer({
 
     const parser = new DOMParser();
     const parsedHtml = parser.parseFromString(snapshotHtml, "text/html");
-    const blockElements = parsedHtml.querySelectorAll(".notion-page-content > *");
+    const blockElements = parsedHtml.querySelectorAll(
+      ".notion-page-content > *",
+    );
 
     return Array.from(blockElements).map((block, index) => ({
       id: block.getAttribute("data-block-id"),
@@ -51,11 +59,19 @@ export default function NotionPageRenderer({
         setSelectedBlocksHtml((prev) =>
           prev.some((block) => block.id === blockId)
             ? prev.filter((block) => block.id !== blockId)
-            : [...prev, { id: blockId, order: blockOrder, clickOrder: clickOrder, html: blockHtml }]
+            : [
+                ...prev,
+                {
+                  id: blockId,
+                  order: blockOrder,
+                  clickOrder: clickOrder,
+                  html: blockHtml,
+                },
+              ],
         );
       }
     },
-    [handleSelectBlock, deployMode, setSelectedBlocksHtml]
+    [handleSelectBlock, deployMode, setSelectedBlocksHtml, clickOrder],
   );
 
   const handleMouseEnter = (blockId) => {
@@ -74,28 +90,28 @@ export default function NotionPageRenderer({
     <Box h="45rem" p={4} textAlign="left" ref={pageRef}>
       {deployMode === "partial" ? (
         selectedBlocksHtml.map((block) => (
-            <Box
-              key={block.id}
-              data-block-id={block.id}
-              dangerouslySetInnerHTML={{ __html: block.html }}
-              onClick={(e) =>
-                handleBlockClick(e, block.id, block.order, block.html)
-              }
-              onMouseEnter={() => handleMouseEnter(block.id)}
-              onMouseLeave={() => handleMouseLeave(block.id)}
-              style={{
-                outline: selectedBlocks.includes(block.id)
-                  ? "2px solid #62aaff"
-                  : hoveredBlockId === block.id
+          <Box
+            key={block.id}
+            data-block-id={block.id}
+            dangerouslySetInnerHTML={{ __html: block.html }}
+            onClick={(e) =>
+              handleBlockClick(e, block.id, block.order, block.html)
+            }
+            onMouseEnter={() => handleMouseEnter(block.id)}
+            onMouseLeave={() => handleMouseLeave(block.id)}
+            style={{
+              outline: selectedBlocks.includes(block.id)
+                ? "2px solid #62aaff"
+                : hoveredBlockId === block.id
                   ? "1px dashed lightgray"
                   : "none",
-                cursor: "pointer",
-                width: "fit-content",
-              }}
-            />
-          ))
+              cursor: "pointer",
+              width: "fit-content",
+            }}
+          />
+        ))
       ) : (
-      <Box dangerouslySetInnerHTML={{ __html: snapshotHtml }} />
+        <Box dangerouslySetInnerHTML={{ __html: snapshotHtml }} />
       )}
     </Box>
   );

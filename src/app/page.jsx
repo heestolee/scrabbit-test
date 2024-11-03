@@ -7,7 +7,7 @@ import UrlInputArea from "@/components/UrlInputArea";
 import NotionPageRenderer from "@/components/NotionPageRenderer";
 import DomainInputArea from "@/components/DomainInputArea";
 import DeployPreviewRenderer from "@/components/DeployPreviewRenderer";
-import LoadingAnimation from "@/components/LoadingAnimaition";
+import LoadingAnimation from "@/components/LoadingAnimation";
 
 import { motion } from "framer-motion";
 import {
@@ -72,9 +72,13 @@ export default function Home() {
     }
 
     try {
-      const deploySetting = deployMode === "partial"
-        ? { apiEndpoint: "/api/deploy-partial", deployContent: selectedBlocksHtml }
-        : { apiEndpoint: "/api/deploy", deployContent: snapshotHtml };
+      const deploySetting =
+        deployMode === "partial"
+          ? {
+              apiEndpoint: "/api/deploy-partial",
+              deployContent: selectedBlocksHtml,
+            }
+          : { apiEndpoint: "/api/deploy", deployContent: snapshotHtml };
       const response = await fetch(deploySetting.apiEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -90,11 +94,12 @@ export default function Home() {
 
       if (response.ok) {
         setModalMessage(`배포된 사이트: ${data.url}`);
-      }
-      else if (response.status === 400 && data.error.includes("동일한 도메인이 이미 존재합니다")) {
+      } else if (
+        response.status === 400 &&
+        data.error.includes("동일한 도메인이 이미 존재합니다")
+      ) {
         setModalMessage(data.error);
-      }
-      else {
+      } else {
         setModalMessage("배포에 실패했습니다. 다시 시도해주세요.");
       }
       setIsModalOpen(true);
@@ -109,7 +114,7 @@ export default function Home() {
     setSelectedBlocks((prev) =>
       prev.includes(blockId)
         ? prev.filter((id) => id !== blockId)
-        : [...prev, blockId]
+        : [...prev, blockId],
     );
   };
 
@@ -134,8 +139,8 @@ export default function Home() {
           isRendered
             ? { zoom: 0.1, x: "-470vw" }
             : isLoading
-            ? { zoom: 0.1 }
-            : { zoom: 1 }
+              ? { zoom: 0.1 }
+              : { zoom: 1 }
         }
         transition={{ duration: 0.8 }}
         style={{
@@ -206,13 +211,15 @@ export default function Home() {
               }}
             >
               {isLoading && <LoadingAnimation />}
-            {snapshotHtml && <NotionPageRenderer
-              deployMode={deployMode}
-              snapshotHtml={snapshotHtml}
-              selectedBlocks={selectedBlocks}
-              handleSelectBlock={handleSelectBlock}
-              setSelectedBlocksHtml={setSelectedBlocksHtml}
-            />}
+              {snapshotHtml && (
+                <NotionPageRenderer
+                  deployMode={deployMode}
+                  snapshotHtml={snapshotHtml}
+                  selectedBlocks={selectedBlocks}
+                  handleSelectBlock={handleSelectBlock}
+                  setSelectedBlocksHtml={setSelectedBlocksHtml}
+                />
+              )}
             </Box>
           )}
         </Box>
@@ -250,8 +257,8 @@ export default function Home() {
             {modalMessage.includes("배포된")
               ? "배포 완료!"
               : modalMessage.includes("도메인")
-              ? "도메인 중복 오류"
-              : "배포 중 오류 발생"}
+                ? "도메인 중복 오류"
+                : "배포 중 오류 발생"}
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody>

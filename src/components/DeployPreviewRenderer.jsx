@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Box, Center, Button } from "@chakra-ui/react";
 
 export default function DeployPreviewRenderer({
@@ -56,15 +56,14 @@ export default function DeployPreviewRenderer({
         }}
         style={{ zoom: 0.6 }}
       >
-        {(deployMode === "partial") && selectedBlocksHtml.length ? (
-          selectedBlocksHtml
-            .map((block, order) => (
-              <Box
-                key={order}
-                dangerouslySetInnerHTML={{ __html: block.html }}
-                h="max-content"
-              />
-            ))
+        {deployMode === "partial" && selectedBlocksHtml.length ? (
+          selectedBlocksHtml.map((block, order) => (
+            <Box
+              key={order}
+              dangerouslySetInnerHTML={{ __html: block.html }}
+              h="max-content"
+            />
+          ))
         ) : deployMode === "full" ? (
           <Center>전체배포 모드입니다.</Center>
         ) : (
