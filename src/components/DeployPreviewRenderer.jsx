@@ -1,22 +1,37 @@
 "use client";
 
-import React, { useEffect } from "react";
-import { Box, Center } from "@chakra-ui/react";
+import React, { useState, useEffect } from "react";
+import { Box, Center, Button } from "@chakra-ui/react";
 
 export default function DeployPreviewRenderer({
   deployMode,
   selectedBlocksHtml,
+  setSelectedBlocksHtml,
 }) {
+  const [isSortedByClickOrder, setIsSortedByClickOrder] = useState(true);
+
+  const handleBlockSort = () => {
+    const newSortedBlocks = isSortedByClickOrder
+      ? [...selectedBlocksHtml].sort((a, b) => a.order - b.order)
+      : [...selectedBlocksHtml].sort((a, b) => a.clickOrder - b.clickOrder);
+
+    setSelectedBlocksHtml(newSortedBlocks);
+    setIsSortedByClickOrder(!isSortedByClickOrder);
+  };
 
   return (
     <Center
       display="flex"
+      flexDirection="column"
       h="40rem"
       w="full"
       alignItems="center"
       justifyContent="center"
       bg="gray.300"
     >
+      <Button onClick={handleBlockSort} mb={4}>
+        {isSortedByClickOrder ? "정렬된 순서로" : "선택된 순서로"}
+      </Button>
       <Box
         bg="white"
         p={4}
@@ -41,9 +56,8 @@ export default function DeployPreviewRenderer({
         }}
         style={{ zoom: 0.6 }}
       >
-        {selectedBlocksHtml && selectedBlocksHtml.length > 0 ? (
+        {(deployMode === "partial") && selectedBlocksHtml.length ? (
           selectedBlocksHtml
-            .sort((a, b) => a.order - b.order)
             .map((block, order) => (
               <Box
                 key={order}

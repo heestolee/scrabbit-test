@@ -13,6 +13,7 @@ export default function NotionPageRenderer({
 }) {
   const pageRef = useRef(null);
   const [hoveredBlockId, setHoveredBlockId] = useState(null);
+  const [clickOrder, setClickOrder] = useState(0);
 
   useEffect(() => {
     if (deployMode === "partial") {
@@ -46,10 +47,11 @@ export default function NotionPageRenderer({
 
       if (deployMode === "partial") {
         handleSelectBlock(blockId);
+        setClickOrder((prevOrder) => prevOrder + 1);
         setSelectedBlocksHtml((prev) =>
           prev.some((block) => block.id === blockId)
             ? prev.filter((block) => block.id !== blockId)
-            : [...prev, { id: blockId, order: blockOrder, html: blockHtml }]
+            : [...prev, { id: blockId, order: blockOrder, clickOrder: clickOrder, html: blockHtml }]
         );
       }
     },
