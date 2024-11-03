@@ -72,16 +72,17 @@ export default function Home() {
     }
 
     try {
-      const apiEndpoint = deployMode === "partial" ? "/api/deploy-partial" : "/api/deploy";
-      setIsLoading(true);
-      const response = await fetch(apiEndpoint, {
+      const deploySetting = deployMode === "partial"
+        ? { apiEndpoint: "/api/deploy-partial", deployContent: selectedBlocksHtml }
+        : { apiEndpoint: "/api/deploy", deployContent: snapshotHtml };
+      const response = await fetch(deploySetting.apiEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           notionPageId,
           subdomain,
           deployMode,
-          selectedBlocksHtml,
+          deployContent: deploySetting.deployContent,
         }),
       });
 
@@ -101,8 +102,6 @@ export default function Home() {
       console.error("배포 중 오류 발생:", error);
       setModalMessage("배포에 실패했습니다. 다시 시도해주세요.");
       setIsModalOpen(true);
-    } finally {
-      setIsLoading(false);
     }
   };
 

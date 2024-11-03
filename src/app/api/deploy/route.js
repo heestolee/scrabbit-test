@@ -1,18 +1,10 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-
-import takeSnapshot from "@/lib/puppeteerSnapshot";
 import { waitForSSLCertification } from "@/lib/waitForSSLCertification";
 
 export async function POST(request) {
-  const { pageId, subdomain, notionUrl } = await request.json();
+  const { pageId, subdomain, deployContent } = await request.json();
 
   try {
-    const snapshotFilePath = await takeSnapshot(
-      notionUrl,
-      `snapshot-${pageId}`,
-    );
-
     const projectName = `notion-${subdomain}-${pageId}`;
 
     const domainCheckResponse = await fetch(
@@ -42,8 +34,6 @@ export async function POST(request) {
       }
     }
 
-    const snapshotHtml = fs.readFileSync(snapshotFilePath, "utf8");
-
     const vercelResponse = await fetch(
       "https://api.vercel.com/v13/deployments",
       {
@@ -57,7 +47,7 @@ export async function POST(request) {
           files: [
             {
               file: "index.html",
-              data: snapshotHtml,
+              data: deployContent,
             },
           ],
           target: "production",

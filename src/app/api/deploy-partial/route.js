@@ -3,7 +3,7 @@ import { waitForSSLCertification } from "@/lib/waitForSSLCertification";
 
 export async function POST(request) {
   try {
-    const { pageId, subdomain, selectedBlocksHtml } = await request.json();
+    const { pageId, subdomain, deployContent } = await request.json();
 
     const projectName = `notion-${subdomain}-${pageId}`;
 
@@ -35,10 +35,7 @@ export async function POST(request) {
       }
     }
 
-    const combinedHtml = selectedBlocksHtml
-      .sort((a, b) => a.order - b.order)
-      .map((block) => block.html)
-      .join("\n");
+    const combinedHtml = deployContent.map((block) => block.html).join("\n");
 
     const vercelResponse = await fetch(
       "https://api.vercel.com/v13/deployments",
