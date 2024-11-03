@@ -41,34 +41,16 @@ export default function NotionPageRenderer({
   }, [snapshotHtml, deployMode]);
 
   const handleBlockClick = useCallback(
-    (event) => {
+    (event, blockId, blockOrder, blockHtml) => {
       event.preventDefault();
-      const blockElement = event.currentTarget;
-      const closestTopBlock = blockElement.closest(".notion-page-content > *");
-      const topBlockId = closestTopBlock?.getAttribute("data-block-id");
-      const blockOrder = [...closestTopBlock.parentElement.children].indexOf(
-        closestTopBlock,
-      );
 
-      if (deployMode === "partial" && topBlockId) {
-
-        closestTopBlock.style.outline = "none";
-        closestTopBlock.style.cursor = "none";
-
-        handleSelectBlock(topBlockId);
-        setSelectedBlocksHtml((prev) => {
-          if (prev.some((block) => block.id === topBlockId)) {
-            return prev.filter((block) => block.id !== topBlockId);
-          }
-          return [
-            ...prev,
-            {
-              id: topBlockId,
-              order: blockOrder,
-              html: closestTopBlock.outerHTML,
-            },
-          ];
-        });
+      if (deployMode === "partial") {
+        handleSelectBlock(blockId);
+        setSelectedBlocksHtml((prev) =>
+          prev.some((block) => block.id === blockId)
+            ? prev.filter((block) => block.id !== blockId)
+            : [...prev, { id: blockId, order: blockOrder, html: blockHtml }]
+        );
       }
     },
     [handleSelectBlock, deployMode, setSelectedBlocksHtml]
@@ -77,7 +59,7 @@ export default function NotionPageRenderer({
   const handleMouseEnter = (blockId) => {
     if (!selectedBlocks.includes(blockId)) {
       setHoveredBlockId(blockId);
-        }
+    }
   };
 
   const handleMouseLeave = (blockId) => {

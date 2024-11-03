@@ -29,7 +29,7 @@ export default function Home() {
   const [subdomain, setSubdomain] = useState("");
   const [notionPageId, setNotionPageId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedBlocks, setSelectedBlocks] = useState({});
+  const [selectedBlocks, setSelectedBlocks] = useState([]);
   const [selectedBlocksHtml, setSelectedBlocksHtml] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
@@ -107,10 +107,11 @@ export default function Home() {
   };
 
   const handleSelectBlock = (blockId) => {
-    setSelectedBlocks((prev) => ({
-      ...prev,
-      [blockId]: !prev[blockId],
-    }));
+    setSelectedBlocks((prev) =>
+      prev.includes(blockId)
+        ? prev.filter((id) => id !== blockId)
+        : [...prev, blockId]
+    );
   };
 
   const closeModal = () => {
