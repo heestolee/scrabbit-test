@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useCallback, useMemo } from "react";
+import React, { useEffect, useRef, useCallback, useState, useMemo } from "react";
 import { Box } from "@chakra-ui/react";
 import { PSEUDO_ELEMENTS_STYLE } from "constant/constant";
 
@@ -12,6 +12,7 @@ export default function NotionPageRenderer({
   setSelectedBlocksHtml,
 }) {
   const pageRef = useRef(null);
+  const [hoveredBlockId, setHoveredBlockId] = useState(null);
 
   useEffect(() => {
     if (deployMode === "partial") {
@@ -70,46 +71,20 @@ export default function NotionPageRenderer({
         });
       }
     },
-    [handleSelectBlock, deployMode, setSelectedBlocksHtml],
+    [handleSelectBlock, deployMode, setSelectedBlocksHtml]
   );
 
-  useEffect(() => {
-    if (deployMode !== "partial") return;
-    const blockElements = document.querySelectorAll(".notion-page-content > *");
-    blockElements.forEach((block) => {
-      const topBlockId = block.getAttribute("data-block-id");
-
-      block.addEventListener("click", handleBlockClick);
-
-      if (selectedBlocks[topBlockId]) {
-        block.style.outline = "2px solid #62aaff";
-      } else {
-        block.style.outline = "none";
-        block.style.backgroundColor = "white";
-      }
-
-      block.addEventListener("mouseenter", () => {
-        if (!selectedBlocks[topBlockId]) {
-          block.style.outline = "1px dashed lightgray";
-          block.style.cursor = "pointer";
+  const handleMouseEnter = (blockId) => {
+    if (!selectedBlocks.includes(blockId)) {
+      setHoveredBlockId(blockId);
         }
-      });
+  };
 
-      block.addEventListener("mouseleave", () => {
-        if (!selectedBlocks[topBlockId]) {
-          block.style.outline = "none";
-        }
-      });
-    });
-
-    return () => {
-      blockElements.forEach((block) => {
-        block.removeEventListener("click", handleBlockClick);
-      });
-    };
-  }, [selectedBlocks, handleBlockClick, deployMode]);
-
-  if (!snapshotHtml) return <div>No data available.</div>;
+  const handleMouseLeave = (blockId) => {
+    if (!selectedBlocks.includes(blockId)) {
+      setHoveredBlockId(null);
+    }
+  };
 
   return (
     <Box h="45rem" p={4} textAlign="left" ref={pageRef}>
@@ -122,6 +97,17 @@ export default function NotionPageRenderer({
               onClick={(e) =>
                 handleBlockClick(e, block.id, block.order, block.html)
               }
+              onMouseEnter={() => handleMouseEnter(block.id)}
+              onMouseLeave={() => handleMouseLeave(block.id)}
+              style={{
+                outline: selectedBlocks.includes(block.id)
+                  ? "2px solid #62aaff"
+                  : hoveredBlockId === block.id
+                  ? "1px dashed lightgray"
+                  : "none",
+                cursor: "pointer",
+                width: "fit-content",
+              }}
             />
           ))
       ) : (
