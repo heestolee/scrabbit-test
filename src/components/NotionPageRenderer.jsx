@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useCallback } from "react";
+import React, { useEffect, useRef, useCallback, useMemo } from "react";
 import { Box } from "@chakra-ui/react";
 
 export default function NotionPageRenderer({
@@ -11,6 +11,32 @@ export default function NotionPageRenderer({
   setSelectedBlocksHtml,
 }) {
   const pageRef = useRef(null);
+
+  useEffect(() => {
+    if (deployMode === "partial") {
+      const style = document.createElement("style");
+      style.innerHTML = PSEUDO_ELEMENTS_STYLE;
+      document.head.appendChild(style);
+
+      return () => {
+        document.head.removeChild(style);
+      };
+    }
+  }, [deployMode]);
+
+  const selectedBlocksHtml = useMemo(() => {
+    if (deployMode !== "partial") return [];
+
+    const parser = new DOMParser();
+    const parsedHtml = parser.parseFromString(snapshotHtml, "text/html");
+    const blockElements = parsedHtml.querySelectorAll(".notion-page-content > *");
+
+    return Array.from(blockElements).map((block, index) => ({
+      id: block.getAttribute("data-block-id"),
+      order: index,
+      html: block.outerHTML,
+    }));
+  }, [snapshotHtml, deployMode]);
 
   const handleBlockClick = useCallback(
     (event) => {
@@ -85,8 +111,21 @@ export default function NotionPageRenderer({
   if (!snapshotHtml) return <div>No data available.</div>;
 
   return (
-    <Box h="45rem" textAlign="left" ref={pageRef}>
+    <Box h="45rem" p={4} textAlign="left" ref={pageRef}>
+      {deployMode === "partial" ? (
+        selectedBlocksHtml.map((block) => (
+            <Box
+              key={block.id}
+              data-block-id={block.id}
+              dangerouslySetInnerHTML={{ __html: block.html }}
+              onClick={(e) =>
+                handleBlockClick(e, block.id, block.order, block.html)
+              }
+            />
+          ))
+      ) : (
       <Box dangerouslySetInnerHTML={{ __html: snapshotHtml }} />
+      )}
     </Box>
   );
 }
