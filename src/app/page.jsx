@@ -38,11 +38,6 @@ export default function Home() {
   const renderSectionRef = useRef(null);
 
   const handleFetch = async () => {
-    if (!notionUrl) {
-      alert("Notion URL을 입력하세요.");
-      return;
-    }
-
     setIsLoading(true);
     const pageId = notionUrl.split("/").pop();
     setNotionPageId(pageId);
