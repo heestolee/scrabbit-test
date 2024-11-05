@@ -8,7 +8,7 @@ import React, {
   useMemo,
 } from "react";
 import { Box } from "@chakra-ui/react";
-import { PSEUDO_ELEMENTS_STYLE } from "constant/constant";
+import { PSEUDO_ELEMENTS_STYLE } from "@/constant/constant";
 
 export default function NotionPageRenderer({
   snapshotHtml,
