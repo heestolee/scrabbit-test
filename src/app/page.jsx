@@ -2,12 +2,15 @@
 
 import Image from "next/image";
 import React, { useState, useRef } from "react";
+
 import DeployModeSelector from "@/components/DeployModeSelector";
 import UrlInputArea from "@/components/UrlInputArea";
 import NotionPageRenderer from "@/components/NotionPageRenderer";
 import DomainInputArea from "@/components/DomainInputArea";
 import DeployPreviewRenderer from "@/components/DeployPreviewRenderer";
 import LoadingAnimation from "@/components/LoadingAnimation";
+
+import { fetchNotionPage } from "@/actions/fetchNotionPage";
 
 import { motion } from "framer-motion";
 import {
@@ -39,25 +42,18 @@ export default function Home() {
 
   const handleFetch = async () => {
     setIsLoading(true);
-    const pageId = notionUrl.split("/").pop();
-    setNotionPageId(pageId);
 
-    try {
-      const response = await fetch("/api/puppeteer-preview-snapshot", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ notionUrl: notionUrl }),
-      });
-      if (!response.ok) throw new Error("노션 페이지 페칭 실패");
-
-      const data = await response.json();
-      setSnapshotHtml(data.snapshotHtml);
-      setIsRendered(true);
-    } catch (error) {
-      console.error("노션 페이지 페칭 에러:", error);
-    } finally {
+    const { pageId, snapshotHtml, error } = await fetchNotionPage(notionUrl);
+    if (error) {
+      console.error(error);
       setIsLoading(false);
+      return;
     }
+
+    setNotionPageId(pageId);
+    setSnapshotHtml(snapshotHtml);
+    setIsRendered(true);
+    setIsLoading(false);
   };
 
   const handleDeploy = async () => {
