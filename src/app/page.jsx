@@ -11,7 +11,7 @@ import DeployPreviewRenderer from "@/components/DeployPreviewRenderer";
 import LoadingAnimation from "@/components/LoadingAnimation";
 
 import { fetchNotionPage } from "@/actions/fetchNotionPage";
-
+import { deployNotionPage } from "@/actions/deployNotionPage";
 import { motion } from "framer-motion";
 import {
   Box,
@@ -62,43 +62,20 @@ export default function Home() {
       return;
     }
 
-    try {
-      const deploySetting =
-        deployMode === "partial"
-          ? {
-              apiEndpoint: "/api/deploy-partial",
-              deployContent: selectedBlocksHtml,
-            }
-          : { apiEndpoint: "/api/deploy", deployContent: snapshotHtml };
-      const response = await fetch(deploySetting.apiEndpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          notionPageId,
-          subdomain,
-          deployMode,
-          deployContent: deploySetting.deployContent,
-        }),
-      });
+    const { url, error } = await deployNotionPage({
+      notionPageId,
+      subdomain,
+      deployMode,
+      selectedBlocksHtml,
+      snapshotHtml,
+    });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        setModalMessage(`배포된 사이트: ${data.url}`);
-      } else if (
-        response.status === 400 &&
-        data.error.includes("동일한 도메인이 이미 존재합니다")
-      ) {
-        setModalMessage(data.error);
-      } else {
-        setModalMessage("배포에 실패했습니다. 다시 시도해주세요.");
-      }
-      setIsModalOpen(true);
-    } catch (error) {
-      console.error("배포 중 오류 발생:", error);
-      setModalMessage("배포에 실패했습니다. 다시 시도해주세요.");
-      setIsModalOpen(true);
+    if (error) {
+      setModalMessage(error);
+    } else {
+      setModalMessage(`배포된 사이트: ${url}`);
     }
+    setIsModalOpen(true);
   };
 
   const handleSelectBlock = (blockId) => {
