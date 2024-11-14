@@ -1,20 +1,13 @@
 "use client";
 
-import React, {
-  useEffect,
-  useRef,
-  useCallback,
-  useState,
-  useMemo,
-} from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { Box } from "@chakra-ui/react";
 import { PSEUDO_ELEMENTS_STYLE } from "@/constant/constant";
 
 export default function NotionPageRenderer({
   snapshotHtml,
   deployMode,
-  selectedBlocks,
-  handleSelectBlock,
+  selectedBlocksHtml,
   setSelectedBlocksHtml,
 }) {
   const pageRef = useRef(null);
