@@ -6,12 +6,12 @@ import { motion } from "framer-motion";
 import DomainInputArea from "@/components/DomainInputArea";
 import DeployPreviewRenderer from "@/components/DeployPreviewRenderer";
 import DeployModal from "@/components/DeployModal";
-import { deployNotionPage } from "@/actions/deployNotionPage";
+import { deployPage } from "@/actions/deployPage";
 
 export default function DeploymentPanel({
   isRendered,
   deployMode,
-  notionPageId,
+  pageId,
   selectedBlocksHtml,
   snapshotHtml,
 }) {
@@ -21,8 +21,8 @@ export default function DeploymentPanel({
   const renderSectionRef = useRef(null);
 
   const handleDeploy = async () => {
-    const { url, error } = await deployNotionPage({
-      notionPageId,
+    const { url, error } = await deployPage({
+      pageId,
       subdomain,
       deployMode,
       selectedBlocksHtml,
