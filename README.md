@@ -18,34 +18,32 @@ Scrabbit은 스크랩북처럼 **여러 웹사이트에서 취사선택한 정�
   <img src="https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=black">
   <img src="https://img.shields.io/badge/aws elastic beanstalk-e88c0c?style=for-the-badge&logo=&logoColor=black">
   <br><br>
-
-<a href="http://notiondrop.eba-a7ppf4xy.ap-northeast-2.elasticbeanstalk.com/">배포 링크 바로가기</a>
-
 </div>
 
 ## 목차
 
-<!-- toc -->
-
 - [1. 기획동기](#1-%EA%B8%B0%ED%9A%8D%EB%8F%99%EA%B8%B0)
+
 - [2. 프로젝트를 확장하게 된 이유](#2-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%EB%A5%BC-%ED%99%95%EC%9E%A5%ED%95%98%EA%B2%8C-%EB%90%9C-%EC%9D%B4%EC%9C%A0)
 - [3. Next.js를 활용한 프로젝트 구조](#3-nextjs%EB%A5%BC-%ED%99%9C%EC%9A%A9%ED%95%9C-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EA%B5%AC%EC%A1%B0)
-  * [3-1. Next.js의 App router 구조로 프로젝트를 설계한 이유](#3-1-nextjs%EC%9D%98-app-router-%EA%B5%AC%EC%A1%B0%EB%A1%9C-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%EB%A5%BC-%EC%84%A4%EA%B3%84%ED%95%9C-%EC%9D%B4%EC%9C%A0)
 - [4. 구현 세부 사항](#4-%EA%B5%AC%ED%98%84-%EC%84%B8%EB%B6%80-%EC%82%AC%ED%95%AD)
-  * [4-1. 서버 액션으로 웹 페이지의 스냅샷 생성 및 HTML 요소 추출](#4-1-%EC%84%9C%EB%B2%84-%EC%95%A1%EC%85%98%EC%9C%BC%EB%A1%9C-%EC%9B%B9-%ED%8E%98%EC%9D%B4%EC%A7%80%EC%9D%98-%EC%8A%A4%EB%83%85%EC%83%B7-%EC%83%9D%EC%84%B1-%EB%B0%8F-html-%EC%9A%94%EC%86%8C-%EC%B6%94%EC%B6%9C)
-  * [4-2. 여러 페이지의 컨텐츠를 함께 배포할 수 있는 기능 구현](#4-2-%EC%97%AC%EB%9F%AC-%ED%8E%98%EC%9D%B4%EC%A7%80%EC%9D%98-%EC%BB%A8%ED%85%90%EC%B8%A0%EB%A5%BC-%ED%95%A8%EA%BB%98-%EB%B0%B0%ED%8F%AC%ED%95%A0-%EC%88%98-%EC%9E%88%EB%8A%94-%EA%B8%B0%EB%8A%A5-%EA%B5%AC%ED%98%84)
-    + [[1] 블럭 상태에 따라 outline으로 구분](#1-%EB%B8%94%EB%9F%AD-%EC%83%81%ED%83%9C%EC%97%90-%EB%94%B0%EB%9D%BC-outline%EC%9C%BC%EB%A1%9C-%EA%B5%AC%EB%B6%84)
-    + [[2] 스냅샷 렌더링 간에 선택 상태를 기억할 수 있게 하여 여러 페이지에서 취사 선택한 블럭으로 배포 내용을 구성하도록 구현](#2-%EC%8A%A4%EB%83%85%EC%83%B7-%EB%A0%8C%EB%8D%94%EB%A7%81-%EA%B0%84%EC%97%90-%EC%84%A0%ED%83%9D-%EC%83%81%ED%83%9C%EB%A5%BC-%EA%B8%B0%EC%96%B5%ED%95%A0-%EC%88%98-%EC%9E%88%EA%B2%8C-%ED%95%98%EC%97%AC-%EC%97%AC%EB%9F%AC-%ED%8E%98%EC%9D%B4%EC%A7%80%EC%97%90%EC%84%9C-%EC%B7%A8%EC%82%AC-%EC%84%A0%ED%83%9D%ED%95%9C-%EB%B8%94%EB%9F%AD%EC%9C%BC%EB%A1%9C-%EB%B0%B0%ED%8F%AC-%EB%82%B4%EC%9A%A9%EC%9D%84-%EA%B5%AC%EC%84%B1%ED%95%98%EB%8F%84%EB%A1%9D-%EA%B5%AC%ED%98%84)
-  * [4-3. 배포 구성 미리 보기 기능 구현](#4-3-%EB%B0%B0%ED%8F%AC-%EA%B5%AC%EC%84%B1-%EB%AF%B8%EB%A6%AC-%EB%B3%B4%EA%B8%B0-%EA%B8%B0%EB%8A%A5-%EA%B5%AC%ED%98%84)
-    + [[1] 사용자 편의를 고려한 배포 미리 보기 기능](#1-%EC%82%AC%EC%9A%A9%EC%9E%90-%ED%8E%B8%EC%9D%98%EB%A5%BC-%EA%B3%A0%EB%A0%A4%ED%95%9C-%EB%B0%B0%ED%8F%AC-%EB%AF%B8%EB%A6%AC-%EB%B3%B4%EA%B8%B0-%EA%B8%B0%EB%8A%A5)
-    + [[2] `useState`만으로 실시간 미리보기 렌더링 구현](#2-usestate%EB%A7%8C%EC%9C%BC%EB%A1%9C-%EC%8B%A4%EC%8B%9C%EA%B0%84-%EB%AF%B8%EB%A6%AC%EB%B3%B4%EA%B8%B0-%EB%A0%8C%EB%8D%94%EB%A7%81-%EA%B5%AC%ED%98%84)
-  * [4-4. 서브도메인과 SSL을 부여하여 SSG로 배포](#4-4-%EC%84%9C%EB%B8%8C%EB%8F%84%EB%A9%94%EC%9D%B8%EA%B3%BC-ssl%EC%9D%84-%EB%B6%80%EC%97%AC%ED%95%98%EC%97%AC-ssg%EB%A1%9C-%EB%B0%B0%ED%8F%AC)
-    + [[1] Vercel을 활용하여 서브도메인 부여하기](#1-vercel%EC%9D%84-%ED%99%9C%EC%9A%A9%ED%95%98%EC%97%AC-%EC%84%9C%EB%B8%8C%EB%8F%84%EB%A9%94%EC%9D%B8-%EB%B6%80%EC%97%AC%ED%95%98%EA%B8%B0)
-    + [[2] Vercel이 제공하는 LetsEncrypt를 이용한 SSL인증서 등록 과정 중 겪게 된 SSL인증서 등록 지연 현상](#2-vercel%EC%9D%B4-%EC%A0%9C%EA%B3%B5%ED%95%98%EB%8A%94-letsencrypt%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-ssl%EC%9D%B8%EC%A6%9D%EC%84%9C-%EB%93%B1%EB%A1%9D-%EA%B3%BC%EC%A0%95-%EC%A4%91-%EA%B2%AA%EA%B2%8C-%EB%90%9C-ssl%EC%9D%B8%EC%A6%9D%EC%84%9C-%EB%93%B1%EB%A1%9D-%EC%A7%80%EC%97%B0-%ED%98%84%EC%83%81)
-    + [[3] retry 패턴을 응용한 polling으로 SSL 인증 안정성 확보](#3-retry-%ED%8C%A8%ED%84%B4%EC%9D%84-%EC%9D%91%EC%9A%A9%ED%95%9C-polling%EC%9C%BC%EB%A1%9C-ssl-%EC%9D%B8%EC%A6%9D-%EC%95%88%EC%A0%95%EC%84%B1-%ED%99%95%EB%B3%B4)
+  - [4-1. 웹 페이지의 모든 컨텐츠를 부분적으로 추출하기](#4-1-%EC%9B%B9-%ED%8E%98%EC%9D%B4%EC%A7%80%EC%9D%98-%EB%AA%A8%EB%93%A0-%EC%BB%A8%ED%85%90%EC%B8%A0%EB%A5%BC-%EB%B6%80%EB%B6%84%EC%A0%81%EC%9C%BC%EB%A1%9C-%EC%B6%94%EC%B6%9C%ED%95%98%EA%B8%B0)
+    - [[1] 서버 액션으로 웹 페이지의 스냅샷 생성 및 HTML 요소 추출](#1-%EC%84%9C%EB%B2%84-%EC%95%A1%EC%85%98%EC%9C%BC%EB%A1%9C-%EC%9B%B9-%ED%8E%98%EC%9D%B4%EC%A7%80%EC%9D%98-%EC%8A%A4%EB%83%85%EC%83%B7-%EC%83%9D%EC%84%B1-%EB%B0%8F-html-%EC%9A%94%EC%86%8C-%EC%B6%94%EC%B6%9C)
+    - [[2] 웹 페이지마다 일부 재현이 불완전한 스냅샷이 생성되었던 이유](#2-%EC%9B%B9-%ED%8E%98%EC%9D%B4%EC%A7%80%EB%A7%88%EB%8B%A4-%EC%9D%BC%EB%B6%80-%EC%9E%AC%ED%98%84%EC%9D%B4-%EB%B6%88%EC%99%84%EC%A0%84%ED%95%9C-%EC%8A%A4%EB%83%85%EC%83%B7%EC%9D%B4-%EC%83%9D%EC%84%B1%EB%90%98%EC%97%88%EB%8D%98-%EC%9D%B4%EC%9C%A0)
+    - [[3] CSS속성을 커스텀 조정하고 상태로 관리하여 블럭 스타일 변형 방지](#3-css%EC%86%8D%EC%84%B1%EC%9D%84-%EC%BB%A4%EC%8A%A4%ED%85%80-%EC%A1%B0%EC%A0%95%ED%95%98%EA%B3%A0-%EC%83%81%ED%83%9C%EB%A1%9C-%EA%B4%80%EB%A6%AC%ED%95%98%EC%97%AC-%EB%B8%94%EB%9F%AD-%EC%8A%A4%ED%83%80%EC%9D%BC-%EB%B3%80%ED%98%95-%EB%B0%A9%EC%A7%80)
+  - [4-2. 여러 페이지의 컨텐츠를 함께 배포할 수 있는 기능 구현](#4-2-%EC%97%AC%EB%9F%AC-%ED%8E%98%EC%9D%B4%EC%A7%80%EC%9D%98-%EC%BB%A8%ED%85%90%EC%B8%A0%EB%A5%BC-%ED%95%A8%EA%BB%98-%EB%B0%B0%ED%8F%AC%ED%95%A0-%EC%88%98-%EC%9E%88%EB%8A%94-%EA%B8%B0%EB%8A%A5-%EA%B5%AC%ED%98%84)
+    - [[1] 블럭 상태에 따라 outline으로 구분](#1-%EB%B8%94%EB%9F%AD-%EC%83%81%ED%83%9C%EC%97%90-%EB%94%B0%EB%9D%BC-outline%EC%9C%BC%EB%A1%9C-%EA%B5%AC%EB%B6%84)
+    - [[2] 스냅샷 렌더링 간에 선택 상태를 기억할 수 있게 하여 여러 페이지에서 취사 선택한 블럭으로 배포 내용을 구성하도록 구현](#2-%EC%8A%A4%EB%83%85%EC%83%B7-%EB%A0%8C%EB%8D%94%EB%A7%81-%EA%B0%84%EC%97%90-%EC%84%A0%ED%83%9D-%EC%83%81%ED%83%9C%EB%A5%BC-%EA%B8%B0%EC%96%B5%ED%95%A0-%EC%88%98-%EC%9E%88%EA%B2%8C-%ED%95%98%EC%97%AC-%EC%97%AC%EB%9F%AC-%ED%8E%98%EC%9D%B4%EC%A7%80%EC%97%90%EC%84%9C-%EC%B7%A8%EC%82%AC-%EC%84%A0%ED%83%9D%ED%95%9C-%EB%B8%94%EB%9F%AD%EC%9C%BC%EB%A1%9C-%EB%B0%B0%ED%8F%AC-%EB%82%B4%EC%9A%A9%EC%9D%84-%EA%B5%AC%EC%84%B1%ED%95%98%EB%8F%84%EB%A1%9D-%EA%B5%AC%ED%98%84)
+  - [4-3. 배포 구성 미리 보기 기능 구현](#4-3-%EB%B0%B0%ED%8F%AC-%EA%B5%AC%EC%84%B1-%EB%AF%B8%EB%A6%AC-%EB%B3%B4%EA%B8%B0-%EA%B8%B0%EB%8A%A5-%EA%B5%AC%ED%98%84)
+    - [[1] 사용자 편의를 고려한 배포 미리 보기 기능](#1-%EC%82%AC%EC%9A%A9%EC%9E%90-%ED%8E%B8%EC%9D%98%EB%A5%BC-%EA%B3%A0%EB%A0%A4%ED%95%9C-%EB%B0%B0%ED%8F%AC-%EB%AF%B8%EB%A6%AC-%EB%B3%B4%EA%B8%B0-%EA%B8%B0%EB%8A%A5)
+    - [[2] `useState`만으로 실시간 미리보기 렌더링 구현](#2-usestate%EB%A7%8C%EC%9C%BC%EB%A1%9C-%EC%8B%A4%EC%8B%9C%EA%B0%84-%EB%AF%B8%EB%A6%AC%EB%B3%B4%EA%B8%B0-%EB%A0%8C%EB%8D%94%EB%A7%81-%EA%B5%AC%ED%98%84)
+  - [4-4. 서브도메인과 SSL을 부여하여 SSG로 배포](#4-4-%EC%84%9C%EB%B8%8C%EB%8F%84%EB%A9%94%EC%9D%B8%EA%B3%BC-ssl%EC%9D%84-%EB%B6%80%EC%97%AC%ED%95%98%EC%97%AC-ssg%EB%A1%9C-%EB%B0%B0%ED%8F%AC)
+    - [[1] Vercel을 활용하여 서브도메인 부여하기](#1-vercel%EC%9D%84-%ED%99%9C%EC%9A%A9%ED%95%98%EC%97%AC-%EC%84%9C%EB%B8%8C%EB%8F%84%EB%A9%94%EC%9D%B8-%EB%B6%80%EC%97%AC%ED%95%98%EA%B8%B0)
+    - [[2] Vercel이 제공하는 LetsEncrypt를 이용한 SSL인증서 등록 과정 중 겪게 된 SSL인증서 등록 지연 현상](#2-vercel%EC%9D%B4-%EC%A0%9C%EA%B3%B5%ED%95%98%EB%8A%94-letsencrypt%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-ssl%EC%9D%B8%EC%A6%9D%EC%84%9C-%EB%93%B1%EB%A1%9D-%EA%B3%BC%EC%A0%95-%EC%A4%91-%EA%B2%AA%EA%B2%8C-%EB%90%9C-ssl%EC%9D%B8%EC%A6%9D%EC%84%9C-%EB%93%B1%EB%A1%9D-%EC%A7%80%EC%97%B0-%ED%98%84%EC%83%81)
+    - [[3] retry 패턴을 응용한 polling으로 SSL 인증 안정성 확보](#3-retry-%ED%8C%A8%ED%84%B4%EC%9D%84-%EC%9D%91%EC%9A%A9%ED%95%9C-polling%EC%9C%BC%EB%A1%9C-ssl-%EC%9D%B8%EC%A6%9D-%EC%95%88%EC%A0%95%EC%84%B1-%ED%99%95%EB%B3%B4)
 - [5. 회고](#5-%ED%9A%8C%EA%B3%A0)
 
-<!-- tocstop -->
+(README 내용 작성이 아직 완료되지 않았습니다. [이전 프로젝트](https://github.com/heestolee/notiondrop)의 내용은 여기서 확인이 가능합니다.)
 
 <br><br><br>
 
@@ -109,7 +107,9 @@ App router가 '최적'이라고 판단되었던 대표적인 2가지 이유는 �
 
 # 4. 구현 세부 사항
 
-## 4-1. 서버 액션으로 웹 페이지의 스냅샷 생성 및 HTML 요소 추출
+## 4-1. 웹 페이지의 모든 컨텐츠를 부분적으로 추출하기
+
+### [1] 서버 액션으로 웹 페이지의 스냅샷 생성 및 HTML 요소 추출
 
 웹 페이지의 모든 컨텐츠를 렌더링하여 조작하기 위해 서버 액션을 활용하여 **헤드리스 브라우저**를 통해 웹 페이지의 스냅샷을 생성하고, 특정 HTML 요소를 부분적으로 추출하는 기능을 구현했습니다. 이 기능은 사용자가 지정한 페이지의 콘텐츠를 정확히 렌더링하고 필요한 부분만 선택적으로 처리할 수 있도록 설계되었습니다.
 
@@ -119,13 +119,17 @@ Next.js의 서버 액션은 브라우저 환경에서 실행되지 않고 서버
 
 서버 액션은 SSR 방식으로 페이지의 완전한 HTML 구조를 생성합니다. 이를 통해 서버에서 처리된 HTML 스냅샷을 클라이언트에 바로 제공함으로써 로딩 속도를 개선합니다.
 
+<br>
+
+### [2] 웹 페이지마다 일부 재현이 불완전한 스냅샷이 생성되었던 이유
+
+### [3] CSS속성을 커스텀 조정하고 상태로 관리하여 블럭 스타일 변형 방지
+
 <br><br>
 
 ## 4-2. 여러 페이지의 컨텐츠를 함께 배포할 수 있는 기능 구현
 
 ### [1] 블럭 상태에 따라 outline으로 구분
-
-<br><br>
 
 ### [2] 스냅샷 렌더링 간에 선택 상태를 기억할 수 있게 하여 여러 페이지에서 취사 선택한 블럭으로 배포 내용을 구성하도록 구현
 
@@ -185,7 +189,7 @@ SSL 인증서를 등록을 대신 작업해주는건 감사한 일이었으나, 
 
 배포되는 즉시 사용자에게 페이지를 제공하면 간혹 보안 위협이 있는 불완전한 웹 페이지를 제공할 수도 있으니, SSL 인증서 등록이 완료된 후 제공하는 방법이 있는지 확인해보았고 아쉽게도 Vercel 서비스 중 SSL 인증서 등록을 확인해주는건 없었기 때문에, 직접 이를 확인하는 로직을 구현해야 했습니다.
 
-<br>
+<br><br>
 
 ### [3] retry 패턴을 응용한 polling으로 SSL 인증 안정성 확보
 
